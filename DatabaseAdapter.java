@@ -10,14 +10,14 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by dulybon1 on 7/8/15.
  * Database adapter
  */
-public class DatabaseAdapter
+public class DatabaseAdapter implements DatabaseAdapterInterface
 {
     //the database
     private final Context context;
     private DatabaseHelper myDBHelper;
     private SQLiteDatabase db;
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "myDatabase";
 
 
@@ -128,17 +128,17 @@ public class DatabaseAdapter
 
     //the columns for INSTRUMENT_TABLE
     public static final String INST_ID_COLUMN = "instrumentID";
-    public static final String INST_COMPANY_NAME = "company";
+    public static final String INST_NAME = "InstName";
     public static final String INST_MODEL_NAME = "model";
 
     public static final String[] ALL_INST_KEYS = new String[] {INST_ID_COLUMN,
-            INST_COMPANY_NAME, INST_MODEL_NAME};
+            INST_NAME, INST_MODEL_NAME};
 
     //SQL Statement to create Instrument table
     public static final String CREATE_INST_TABLE = "CREATE TABLE "
             + INSTRUMENT_TABLE
             + "(" + INST_ID_COLUMN +  " INTEGER PRIMARY KEY NOT NULL,"
-            + INST_COMPANY_NAME + " TEXT NOT NULL, "
+            + INST_NAME + " TEXT NOT NULL, "
             + INST_MODEL_NAME +   " TEXT NOT NULL)";
 
     /************************************************************************
@@ -215,6 +215,7 @@ public class DatabaseAdapter
         myDBHelper = new DatabaseHelper(context);
     }
 
+    // public static DatabaseAdapterInterface
     // Open the database connection.
     public DatabaseAdapter open() {
         db = myDBHelper.getWritableDatabase();
@@ -245,6 +246,8 @@ public class DatabaseAdapter
         return db.insert(MANAGER_TABLE, null, vals);
     }
 
+    //TO DO ADD MANAGER METHOD THAT TAKES IN A MANAGER AND RETURNS A BOOL.
+
     public Cursor getRowForManagerID(int managerID)
     {
         String where = MANAGER_ID_COLUMN + "=" + managerID;
@@ -255,6 +258,22 @@ public class DatabaseAdapter
             c.moveToFirst();
         }
         return c;
+    }
+
+
+    public Manager getManagerForID(int managerID)
+    {
+        String where = MANAGER_ID_COLUMN + "=" + managerID;
+        Cursor c = db.query(true,MANAGER_TABLE,ALL_MANAGER_KEYS,where,null,null,null,null,null);
+
+        if(c != null)
+        {
+            c.moveToFirst();
+        }
+
+        Manager manager = new Manager(c.getInt(COL_MANAGER_ID),
+                c.getString(COL_MANAGER_FIRST),c.getString(COL_MANAGER_LAST),c.getString(COL_MANAGER_EMAIL),c.getInt(COL_MANAGER_DEPT));
+        return manager;
     }
     //Get all the rows in the manager table
     public Cursor getAllRowsForManager()
@@ -283,6 +302,7 @@ public class DatabaseAdapter
      */
     public long insertRowTech(int id, String first, String last, String em)
     {
+        //to do make this function take tech instead
         ContentValues vals = new ContentValues();
 
         vals.put(TECH_ID_COLUMN, id);
@@ -327,6 +347,21 @@ public class DatabaseAdapter
             t.moveToFirst();
         }
         return t;
+    }
+
+    public Technologist getTechForID(int techID)
+    {
+        String where = TECH_ID_COLUMN + "=" + techID;
+        Cursor t = db.query(true,TECH_TABLE,ALL_TECH_KEYS,where,null,null,null,null,null);
+
+        if(t != null)
+        {
+            t.moveToFirst();
+        }
+
+        Technologist tech = new Technologist(t.getInt(COL_TECH_ID), t.getString(COL_TECH_FIRST),
+                t.getString(COL_TECH_LAST), t.getString(COL_TECH_EMAIL));
+        return tech;
     }
 
     /**
@@ -403,20 +438,21 @@ public class DatabaseAdapter
     /**
      * Inserts a row in the instrument table
      * @param id: instrument ID
-     * @param company Company that supports instrument
+     * @param name Company that supports instrument
      * @param model : Instrument model
      * @return long to confirm success
      */
-    public long insertRowInstrument(int id, String company, String model)
+    public long insertRowInstrument(int id, String name, String model)
     {
         ContentValues vals = new ContentValues();
 
         vals.put(INST_ID_COLUMN, id);
-        vals.put(INST_COMPANY_NAME, company);
+        vals.put(INST_NAME, name);
         vals.put(INST_MODEL_NAME, model);
 
         return db.insert(INSTRUMENT_TABLE, null, vals);
     }
+
 
     /**
      * Gets a row in instrument table
@@ -426,6 +462,19 @@ public class DatabaseAdapter
     public Cursor getRowForInstrumentID(int InstID)
     {
         String where = INST_ID_COLUMN + "=" + InstID;
+        Cursor t = db.query(true,INSTRUMENT_TABLE,ALL_INST_KEYS,where,null,null,null,null,null);
+
+        if(t != null)
+        {
+            t.moveToFirst();
+        }
+        return t;
+    }
+
+    //
+    public Cursor getRowForInstrumentName(String name)
+    {
+        String where = INST_NAME + "=" + name;
         Cursor t = db.query(true,INSTRUMENT_TABLE,ALL_INST_KEYS,where,null,null,null,null,null);
 
         if(t != null)
@@ -748,4 +797,52 @@ public class DatabaseAdapter
         log_row.close();
 
     }
+
+    public boolean addManager(Manager manager)
+    {
+
+       return insertRowManager(manager.getEmployeeID(), manager.getFirstName(), manager.getLastName(),
+               manager.getEmail(), manager.getDepartmentNumber()) > 0;
+
+    }
+    public boolean addTech(Technologist tech)
+    {
+
+        return insertRowTech(tech.getEmployeeID(), tech.getFirstName(),
+                tech.getLastName(), tech.getEmail()) > 0;
+    }
+    public Manager getManagerById(int managerId)
+    {
+        return getManagerForID(managerId);
+    }
+    public Technologist getTechById(int techId)
+    {
+        return getTechForID(techId);
+    }
+    public boolean addInstrument(Instrument instrument)
+    {
+        return insertRowInstrument(instrument.getInstrumentID(), instrument.getCompany(),
+                instrument.getModel()) > 0;
+    }
+    public Instrument getInstrumentByName(String instrumentName)
+    {
+        //to do
+        Cursor  i =  getRowForInstrumentName(instrumentName);
+        Instrument instrument = new Instrument(i.getInt(COL_INST_ID),i.getString(COL_INST_COMPANY_NAME),i.getString(COL_INST_MODEL_NAME));
+        return instrument;
+    }
+
+    public boolean addProcedure(Procedure proc)
+    {
+        return insertRowProcedure(proc.getProcedureID(), proc.getProcedureName(),proc.getInstrumentID(), proc.getFrequency()) > 0;
+    }
+
+    public Procedure getProcedureByID(int procedureID)
+    {
+        Cursor p = getRowForProcedureID(procedureID);
+        Procedure proc = new Procedure(p.getInt(COL_PROC_ID), p.getString(COL_PROC_NAME),
+                p.getInt(COL_PROC_INST_ID_FOREIGN), p.getString(COL_PROC_FREQUENCY));
+        return proc;
+    }
+
 }
