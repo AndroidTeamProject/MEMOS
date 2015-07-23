@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">MEMOS</string>
+    <string name="logo_description">Logo for the MEMOS application</string>
+
+    <string name="title_section1">Home</string>
+    <string name="title_section2">Maintenance</string>
+    <string name="title_section3">Reports</string>
+    <string name="title_section4">Add Items</string>
+
+    <string name="submit">Submit</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="userID">User ID</string>
+    <string name="password">Password</string>
+    <string name="login">Log In</string>
+    <string name="logout">Log Out</string>
+
+    <string name="view_reports">View Reports</string>
+    <string name="month_to_date">Month To Date</string>
+    <string name="today">Today</string>
+    <string name="custom_range">Custom Date Range:</string>
+    <string name="select">Select</string>
+
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="employeeID">Employee ID</string>
+    <string name="managerID">Manager ID</string>
+    <string name="position">Position</string>
+    <string name="instrumentID">Instrument ID or Serial Number</string>
+    <string name="model">Instrument Model</string>
+    <string name="procedure">Procedure Name</string>
+    <string name="frequency">Frequency</string>
+
+    <string-array name="items_to_add">
+        <item>Manager</item>
+        <item>Technologist</item>
+        <item>Instrument</item>
+        <item>Procedure</item>
+    </string-array>
+
+    <string name="check_flags">Check Flags</string>
+
+    <string name="action_example">Example action</string>
+
+    <string name="action_settings">Settings</string>
+</resources>
