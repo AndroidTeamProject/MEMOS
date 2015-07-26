@@ -2,6 +2,7 @@ package com.cop4656.zeronul.memos;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -117,6 +119,9 @@ public class ReportsFragment extends Fragment implements View.OnClickListener
                 textMessage = "EMAIL SENT";
                 toast = Toast.makeText( context, textMessage, duration );
                 toast.show();
+                Intent intent = new Intent(getActivity(), EmailSend.class);
+                ReportsFragment.this.startActivity(intent);
+
                 break;
         }
     }
