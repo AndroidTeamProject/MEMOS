@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+                android:id="@+id/reportsFragment"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,19 +24,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/today"
-            android:id="@+id/radioButton"/>
+            android:id="@+id/today"/>
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/month_to_date"
-            android:id="@+id/radioButton2"/>
+            android:id="@+id/monthToDate"/>
 
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/custom_range"
-            android:id="@+id/radioButton3"/>
+            android:id="@+id/customDateRange"/>
 
     </RadioGroup>
 
@@ -67,16 +68,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/select"
-        android:id="@+id/button2"
+        android:id="@+id/selectDate"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@id/dategroup" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/send_report"
+        android:id="@+id/sendReport"
+        android:layout_below="@+id/dategroup"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
+
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/scrollView"
-        android:layout_gravity="center_horizontal">
-
+        android:layout_gravity="center_horizontal"
+        android:layout_below="@id/sendReport">
     </ScrollView>
+
 </RelativeLayout>

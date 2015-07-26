@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -18,11 +19,16 @@ import android.widget.Toast;
 /**
  * Created by Zero Nul on 7/19/2015.
  */
-public class AddItemsFragment extends Fragment implements OnItemSelectedListener
+public class AddItemsFragment extends Fragment implements OnItemSelectedListener, View.OnClickListener
 {
-    private static boolean loggedIn = false;
-    private static boolean manager = false;
-    private static String userID = "";
+    String entryID;
+    String entryFirstName;
+    String entryLastname;
+    String entryPosition;
+    String entryProcedure;
+    String entryInstrumentID;
+    String entryModel;
+    String entryFrequency;
 
     /**
      * The fragment argument representing the section number for this
@@ -32,9 +38,22 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
 
     private Spinner itemSpinner;
     private LinearLayout newManager;
+    private EditText managerID;
+    private EditText managerFirstName;
+    private EditText managerLastName;
+    private EditText managerPosition;
     private LinearLayout newTechnologist;
+    private EditText technologistID;
+    private EditText technologistFirstName;
+    private EditText technologistLastName;
+    private EditText technologistPosition;
     private LinearLayout newInstrument;
+    private EditText instrumentID;
+    private EditText instrumentModel;
     private LinearLayout newProcedure;
+    private EditText procedureName;
+    private EditText frequency;
+    private EditText instrumentPerformedOn;
     private Button addButton;
 
     /**
@@ -58,10 +77,6 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
     {
         View rootView = inflater.inflate(R.layout.fragment_additems, container, false);
 
-        userID = getArguments().getString( "userID", "");
-        manager = getArguments().getBoolean( "manager", false);
-        loggedIn = getArguments().getBoolean( "loggedIn", false);
-
         itemSpinner = (Spinner)rootView.findViewById( R.id.itemSpinner );
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource
@@ -73,15 +88,63 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
         itemSpinner.setOnItemSelectedListener(this);
 
         newManager = (LinearLayout)rootView.findViewById( R.id.newManager);
+        managerID = (EditText)rootView.findViewById( R.id.managerID );
+        managerFirstName = (EditText)rootView.findViewById( R.id.managerFirstName );
+        managerLastName = (EditText)rootView.findViewById( R.id.managerLastName );
+        managerPosition = (EditText)rootView.findViewById( R.id.managerPosition );
+
         newTechnologist =(LinearLayout)rootView.findViewById( R.id.newTechnologist);
+        technologistID = (EditText)rootView.findViewById( R.id.technologistID );
+        technologistFirstName = (EditText)rootView.findViewById( R.id.technologistFirstName);
+        technologistLastName = (EditText)rootView.findViewById( R.id.technologistLastName );
+        technologistPosition = (EditText)rootView.findViewById( R.id.technologistPosition );
+
         newInstrument = (LinearLayout)rootView.findViewById( R.id.newInstrument);
+        instrumentID = (EditText)rootView.findViewById( R.id.instrumentID );
+        instrumentModel = (EditText)rootView.findViewById( R.id.instrumentModel );
+
         newProcedure = (LinearLayout)rootView.findViewById( R.id.newProcedure);
+        procedureName = (EditText)rootView.findViewById( R.id.procedureName );
+        frequency = (EditText)rootView.findViewById( R.id.frequency );
+        instrumentPerformedOn = (EditText)rootView.findViewById( R.id.instrumentPerformedOn );
+
         addButton = (Button)rootView.findViewById( R.id.addButton );
 
-        newManager.setVisibility(View.GONE);
-        newTechnologist.setVisibility(View.GONE);
-        newInstrument.setVisibility(View.GONE);
-        newProcedure.setVisibility(View.GONE);
+        clearFields();
+
+        /********************************************************
+        *               REMOVE ME AFTER TESTING!!!              *
+        ********************************************************/
+
+        ( (MainActivity)getActivity() ).setManager( true );
+
+        if( !( ( MainActivity )getActivity()).isLoggedIn() )
+        {
+            itemSpinner.setEnabled( false );
+            addButton.setEnabled( false );
+            newManager.setVisibility(View.GONE);
+            CharSequence textMessage = ( getActivity().getString( R.string.login_error ) );
+            Context context = getActivity().getApplicationContext();
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText( context, textMessage, duration );
+            toast.show();
+        }
+
+        if ( ( ( MainActivity )getActivity()).isLoggedIn()
+                && !( ( MainActivity )getActivity()).isManager() )
+        {
+            itemSpinner.setEnabled( false );
+            addButton.setEnabled( false );
+            CharSequence textMessage = ( getActivity().getString( R.string.manager_error ) );
+            Context context = getActivity().getApplicationContext();
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText( context, textMessage, duration );
+            toast.show();
+        }
+
+        rootView.findViewById( R.id.addButton ).setOnClickListener(this);
 
         return rootView;
     }
@@ -103,37 +166,51 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
 
         String spinnerChoice = parent.getItemAtPosition(pos).toString();
 
-        Context context = getActivity().getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast debugToast = Toast.makeText( context, spinnerChoice, duration);
-        debugToast.show();
-
         switch ( spinnerChoice )
         {
             case "Manager":
-                newManager.setVisibility(View.VISIBLE);
+                if ( ( ( MainActivity )getActivity()).isLoggedIn()
+                        && ( ( MainActivity )getActivity()).isManager() )
+                {
+                    newManager.setVisibility(View.VISIBLE);
+                    newManager.setEnabled(true);
+                }
                 newTechnologist.setVisibility(View.GONE);
+                newTechnologist.setEnabled(false);
                 newInstrument.setVisibility(View.GONE);
+                newInstrument.setEnabled(false);
                 newProcedure.setVisibility(View.GONE);
+                newProcedure.setEnabled(false);
                 break;
             case "Technologist":
                 newManager.setVisibility(View.GONE);
+                newManager.setEnabled(false);
                 newTechnologist.setVisibility(View.VISIBLE);
+                newTechnologist.setEnabled(true);
                 newInstrument.setVisibility(View.GONE);
+                newInstrument.setEnabled(false);
                 newProcedure.setVisibility(View.GONE);
+                newProcedure.setEnabled(false);
                 break;
             case "Instrument":
                 newManager.setVisibility(View.GONE);
+                newManager.setEnabled(false);
                 newTechnologist.setVisibility(View.GONE);
+                newTechnologist.setEnabled(false);
                 newInstrument.setVisibility(View.VISIBLE);
+                newInstrument.setEnabled(true);
                 newProcedure.setVisibility(View.GONE);
+                newProcedure.setEnabled(false);
                 break;
             case "Procedure":
                 newManager.setVisibility(View.GONE);
+                newManager.setEnabled(false);
                 newTechnologist.setVisibility(View.GONE);
+                newTechnologist.setEnabled(false);
                 newInstrument.setVisibility(View.GONE);
+                newInstrument.setEnabled(false);
                 newProcedure.setVisibility(View.VISIBLE);
+                newProcedure.setEnabled(true);
                 break;
         }
 
@@ -144,4 +221,110 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
         // Another interface callback
     }
 
+    @Override
+    public void onClick(View v)
+    {
+        if ( fieldIsEmpty() )
+        {
+            CharSequence textMessage = ( getActivity().getString( R.string.empty_field_error) );
+            Context context = getActivity().getApplicationContext();
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText( context, textMessage, duration );
+            toast.show();
+        }
+
+        else
+        {
+            CharSequence textMessage = "Stuff is inserted into database";
+            Context context = getActivity().getApplicationContext();
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText( context, textMessage, duration );
+            toast.show();
+
+            clearFields();
+        }
+    }
+
+    private void clearFields()
+    {
+        managerID.setText("");
+        managerFirstName.setText("");
+        managerLastName.setText("");
+        managerPosition.setText("");
+
+        technologistID.setText("");
+        technologistFirstName.setText("");
+        technologistLastName.setText("");
+        technologistPosition.setText("");
+
+        instrumentID.setText("");
+        instrumentModel.setText("");
+
+        procedureName.setText("");
+        instrumentPerformedOn.setText("");
+        frequency.setText( "" );
+    }
+
+    private boolean fieldIsEmpty()
+    {
+        String fieldChecker = managerID.getText().toString();;
+
+        if ( newManager.isEnabled() )
+        {
+            if ( fieldChecker.equals( "" ) )
+                return true;
+            fieldChecker = managerFirstName.getText().toString();
+            if ( fieldChecker.equals( "" ) )
+                return true;
+            fieldChecker = managerLastName.getText().toString();
+            if ( fieldChecker.equals( "" ) )
+                return true;
+            fieldChecker = managerPosition.getText().toString();
+            if ( fieldChecker.equals( "" ) )
+                return true;
+        }
+
+        else if ( newTechnologist.isEnabled() )
+        {
+            fieldChecker = technologistID.getText().toString();
+            if ( fieldChecker.equals( "" ) )
+                return true;
+            fieldChecker = technologistFirstName.getText().toString();
+            if ( fieldChecker.equals( "" ) )
+                return true;
+            fieldChecker = technologistLastName.getText().toString();
+            if ( fieldChecker.equals( "" ) )
+                return true;
+            fieldChecker = technologistPosition.getText().toString();
+            if ( fieldChecker.equals( "" ) )
+                return true;
+        }
+
+        else if ( newInstrument.isEnabled() )
+        {
+            fieldChecker = instrumentID.getText().toString();
+            if ( fieldChecker.equals( "" ) )
+                return true;
+            fieldChecker = instrumentModel.getText().toString();
+            if ( fieldChecker.equals( "" ) )
+                return true;
+        }
+
+        else
+        {
+            fieldChecker = procedureName.getText().toString();
+            if ( fieldChecker.equals( "" ) )
+                return true;
+            fieldChecker = instrumentPerformedOn.getText().toString();
+            if ( fieldChecker.equals( "" ) )
+                return true;
+            fieldChecker = frequency.getText().toString();
+            if ( fieldChecker.equals( "" ) )
+                return true;
+        }
+
+        return false;
+    }
 }

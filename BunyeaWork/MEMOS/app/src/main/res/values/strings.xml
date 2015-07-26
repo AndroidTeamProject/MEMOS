@@ -22,7 +22,9 @@
     <string name="today">Today</string>
     <string name="custom_range">Custom Date Range:</string>
     <string name="select">Select</string>
+    <string name="send_report">Send Report</string>
 
+    <string name="add_item_desc">Add new employees, instruments, or procedures.</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="employeeID">Employee ID</string>
@@ -32,6 +34,16 @@
     <string name="model">Instrument Model</string>
     <string name="procedure">Procedure Name</string>
     <string name="frequency">Frequency</string>
+
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="shift">Shift</string>
+    <string name="comments">Comments</string>
+
+    <string name="login_error">PLEASE LOG IN</string>
+    <string name="manager_error">MANAGER ACCOUNT REQUIRED</string>
+    <string name="technologist_error">TECHNOLOGIST ACCOUNT REQUIRED</string>
+    <string name="empty_field_error">A required field has been left empty.</string>
 
     <string-array name="items_to_add">
         <item>Manager</item>

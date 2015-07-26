@@ -2,22 +2,30 @@ package com.cop4656.zeronul.memos;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * Created by Zero Nul on 7/16/2015.
  */
-public class HomeFragment extends Fragment
+public class HomeFragment extends Fragment implements View.OnClickListener
 {
     private static boolean loggedIn = false;
     private static boolean manager = false;
     private static String userID = "";
     private static String password = "";
+
+    Button loginButton;
+    EditText userIDField;
+    EditText passwordField;
 
     /**
      * The fragment argument representing the section number for this
@@ -45,14 +53,20 @@ public class HomeFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        userID = getArguments().getString( "userID", "");
-        manager = getArguments().getBoolean( "manager", false);
-        loggedIn = getArguments().getBoolean( "loggedIn", false);
+        final View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        loginButton = (Button)rootView.findViewById( R.id.loginButton );
+        userIDField = (EditText)rootView.findViewById( R.id.userID );
+        passwordField = (EditText)rootView.findViewById( R.id.password );
+
+        rootView.findViewById( R.id.loginButton ).setOnClickListener(this);
+
+        if ( ( ( MainActivity )getActivity() ).isLoggedIn() )
+            login( ( ( MainActivity )getActivity() ).getUserID() );
 
         return rootView;
     }
+
 
     @Override
     public void onAttach(Activity activity)
@@ -66,8 +80,8 @@ public class HomeFragment extends Fragment
     {
         this.userID = userID;
         Intent intent = new Intent( getActivity().getBaseContext(), MainActivity.class );
-        intent.putExtra( "userID", userID );
-        getActivity().startActivity( intent );
+        intent.putExtra("userID", userID);
+        getActivity().startActivity(intent);
 
     }
 
@@ -110,4 +124,63 @@ public class HomeFragment extends Fragment
     {
         return manager;
     }
+
+    public void login()
+    {
+        loginButton.setText(R.string.logout);
+        ( ( MainActivity )getActivity() ).setLoggedIn(true);
+        ( ( MainActivity )getActivity() ).setUserID(userIDField.getText().toString());
+        userIDField.setText( ( ( MainActivity )getActivity() ).getUserID() );
+        userIDField.setClickable(false);
+        passwordField.setVisibility(View.GONE);
+    }
+
+    public void login( String userID )
+    {
+        loginButton.setText(R.string.logout);
+        userIDField.setText( ( ( MainActivity )getActivity() ).getUserID() );
+        userIDField.setClickable(false);
+        passwordField.setVisibility(View.GONE);
+    }
+
+
+    public void logout()
+    {
+        loginButton.setText(R.string.login);
+        ( ( MainActivity )getActivity() ).setLoggedIn(false);
+        ( ( MainActivity )getActivity() ).setUserID("");
+        userIDField.setText( "" );
+        userIDField.setClickable(true);
+        passwordField.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+        if ( ( ( MainActivity )getActivity() ).isLoggedIn() )
+        {
+            logout();
+        }
+
+        else
+        {
+            login();
+        }
+    }
+
+    private boolean fieldIsEmpty()
+    {
+        String fieldChecker = userIDField.getText().toString();
+
+        if ( fieldChecker.equals("") )
+            return true;
+
+        fieldChecker = passwordField.getText().toString();
+
+        if ( fieldChecker.equals( "" ) )
+            return true;
+
+        return false;
+    }
+
 }
