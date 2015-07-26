@@ -1,4 +1,4 @@
-package com.android.databasebuilder;
+package com.cop4656.zeronul.memos;
 
 /**
  * Created by dulybon1 on 7/7/15.
@@ -7,12 +7,12 @@ package com.android.databasebuilder;
 public class Procedure
 {
     //PRIMARY KEY
-    private long procedureID_;
+    private int procedureID_;
 
     private String procedureName_;
 
     //THIS IS THE FOREIGN KEY FROM INSTRUMENT
-    private long instrumentID_;
+    private int instrumentID_;
 
     /**this instance variable should only be able to take the values
      * Daily
@@ -24,7 +24,7 @@ public class Procedure
     private String frequency_;
 
     //constructor
-    Procedure(long procID, String name, long inst_id, String f)
+    Procedure(int procID, String name, int inst_id, String f)
     {
         this.procedureID_ = procID;
         this.procedureName_ = name;
@@ -32,12 +32,12 @@ public class Procedure
         this.frequency_ = f;
     }
 
-    public long getProcedureID()
+    public int getProcedureID()
     {
         return procedureID_;
     }
 
-    public long getInstrumentID()
+    public int getInstrumentID()
     {
         return instrumentID_;
     }

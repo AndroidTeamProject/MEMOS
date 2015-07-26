@@ -2,16 +2,14 @@ package com.cop4656.zeronul.memos;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 /**
  * Created by Zero Nul on 7/16/2015.
@@ -177,7 +175,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
 
         fieldChecker = passwordField.getText().toString();
 
-        if ( fieldChecker.equals( "" ) )
+        if ( fieldChecker.equals("") )
             return true;
 
         return false;

@@ -1,4 +1,4 @@
-package com.android.databasebuilder;
+package com.cop4656.zeronul.memos;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by dulybon1 on 7/8/15.
  * Database adapter
  */
-public class DatabaseAdapter implements DatabaseAdapterInterface
+public class DatabaseAdapter
 {
     //the database
     private final Context context;
@@ -120,25 +120,21 @@ public class DatabaseAdapter implements DatabaseAdapterInterface
 
     //Instrument field numbers
     public static final int COL_INST_ID = 0;
-    public static final int COL_INST_COMPANY_NAME = 1;
-    public static final int COL_INST_MODEL_NAME = 2;
+    public static final int COL_INST_MODEL_NAME = 1;
 
     //Instrument table name
     public static final String INSTRUMENT_TABLE = "Instrument";
 
     //the columns for INSTRUMENT_TABLE
     public static final String INST_ID_COLUMN = "instrumentID";
-    public static final String INST_NAME = "InstName";
-    public static final String INST_MODEL_NAME = "model";
+    public static final String INST_MODEL_NAME = "modelName";
 
-    public static final String[] ALL_INST_KEYS = new String[] {INST_ID_COLUMN,
-            INST_NAME, INST_MODEL_NAME};
+    public static final String[] ALL_INST_KEYS = new String[] {INST_ID_COLUMN, INST_MODEL_NAME};
 
     //SQL Statement to create Instrument table
     public static final String CREATE_INST_TABLE = "CREATE TABLE "
             + INSTRUMENT_TABLE
             + "(" + INST_ID_COLUMN +  " INTEGER PRIMARY KEY NOT NULL,"
-            + INST_NAME + " TEXT NOT NULL, "
             + INST_MODEL_NAME +   " TEXT NOT NULL)";
 
     /************************************************************************
@@ -438,16 +434,14 @@ public class DatabaseAdapter implements DatabaseAdapterInterface
     /**
      * Inserts a row in the instrument table
      * @param id: instrument ID
-     * @param name Company that supports instrument
      * @param model : Instrument model
      * @return long to confirm success
      */
-    public long insertRowInstrument(int id, String name, String model)
+    public long insertRowInstrument(int id, String model)
     {
         ContentValues vals = new ContentValues();
 
         vals.put(INST_ID_COLUMN, id);
-        vals.put(INST_NAME, name);
         vals.put(INST_MODEL_NAME, model);
 
         return db.insert(INSTRUMENT_TABLE, null, vals);
@@ -472,9 +466,9 @@ public class DatabaseAdapter implements DatabaseAdapterInterface
     }
 
     //
-    public Cursor getRowForInstrumentName(String name)
+    public Cursor getRowForInstrumentModel(String name)
     {
-        String where = INST_NAME + "=" + name;
+        String where = INST_MODEL_NAME + "=" + name;
         Cursor t = db.query(true,INSTRUMENT_TABLE,ALL_INST_KEYS,where,null,null,null,null,null);
 
         if(t != null)
@@ -643,7 +637,7 @@ public class DatabaseAdapter implements DatabaseAdapterInterface
             _db.execSQL("DROP TABLE IF EXISTS " + INSTRUMENT_TABLE);
             _db.execSQL("DROP TABLE IF EXISTS " + DEPARTMENT_TABLE);
             _db.execSQL("DROP TABLE IF EXISTS " + PROCEDURE_TABLE);
-            _db.execSQL("DROP TABLE IF EXISTS " + LOG_TIME);
+            _db.execSQL("DROP TABLE IF EXISTS " + LOG_TABLE);
 
             // Recreate new database:
             onCreate(_db);
@@ -819,16 +813,17 @@ public class DatabaseAdapter implements DatabaseAdapterInterface
     {
         return getTechForID(techId);
     }
+
     public boolean addInstrument(Instrument instrument)
     {
-        return insertRowInstrument(instrument.getInstrumentID(), instrument.getCompany(),
+        return insertRowInstrument(instrument.getInstrumentID(),
                 instrument.getModel()) > 0;
     }
-    public Instrument getInstrumentByName(String instrumentName)
+    public Instrument getInstrumentById(int instrumentId)
     {
         //to do
-        Cursor  i =  getRowForInstrumentName(instrumentName);
-        Instrument instrument = new Instrument(i.getInt(COL_INST_ID),i.getString(COL_INST_COMPANY_NAME),i.getString(COL_INST_MODEL_NAME));
+        Cursor  i =  getRowForInstrumentID(instrumentId);
+        Instrument instrument = new Instrument(i.getInt(COL_INST_ID),i.getString(COL_INST_MODEL_NAME));
         return instrument;
     }
 

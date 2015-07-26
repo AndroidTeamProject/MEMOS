@@ -1,25 +1,19 @@
 package com.cop4656.zeronul.memos;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.Gravity;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -31,10 +25,14 @@ public class MainActivity extends ActionBarActivity
     private static boolean manager = false;
     private static String userID = "";
 
+    private DatabaseAdapter myDB;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
+
+    //addItems fragment
+    private AddItemsFragment addItemsFragment;
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
@@ -51,10 +49,12 @@ public class MainActivity extends ActionBarActivity
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
+
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
 
     }
 
@@ -252,5 +252,13 @@ public class MainActivity extends ActionBarActivity
         Toast toastScore = Toast.makeText( context, textMessage, duration );
         toastScore.show();
     }
+
+
+
+    public void submit(View v)
+    {
+        addItemsFragment.addItemToDatabase();
+    }
+
 
 }

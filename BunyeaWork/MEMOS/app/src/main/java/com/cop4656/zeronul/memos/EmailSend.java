@@ -1,4 +1,4 @@
-package assignment4.android.com.assignment4_works;
+package com.cop4656.zeronul.memos;
 
 import android.app.Activity;
 import android.content.Intent;

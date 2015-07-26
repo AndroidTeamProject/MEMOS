@@ -1,4 +1,4 @@
-package com.android.databasebuilder;
+package com.cop4656.zeronul.memos;
 
 /**
  * Created by dulybon1 on 7/7/15.
@@ -6,26 +6,20 @@ package com.android.databasebuilder;
  */
 public class Instrument
 {
-    private long instrumentID_;
-    private String company_;
+    private int instrumentID_;
     private String model_;
 
-    Instrument(long instID, String comp, String model)
+    Instrument(int instID, String model)
     {
         this.instrumentID_ = instID;
-        this.company_ = comp;
         this.model_ = model;
     }
 
-    public long getInstrumentID()
+    public int getInstrumentID()
     {
         return instrumentID_;
     }
 
-    public String getCompany()
-    {
-        return company_;
-    }
 
     public String getModel()
     {
