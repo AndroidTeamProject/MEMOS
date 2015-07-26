@@ -16,10 +16,21 @@ import java.util.Date;
 
 
 /**
- * Created by Zero Nul on 7/22/2015.
+ * Created by Zero Nul on 7/22/2015. This is the high use maintenance fragment that allows the
+ * technologists to input information into the log table.
  */
 public class MaintenanceFragment extends Fragment implements View.OnClickListener
 {
+    //strings to hold user entered maintenance data
+    String maintenanceField;
+    String maintenanceField2;
+    String maintenanceField3;
+    String maintenanceField4;
+    String maintenanceField5;
+    String maintenanceField6;
+    String maintenanceField7;
+
+    //declare widgets
     EditText editText;
     EditText editText2;
     EditText editText3;
@@ -29,6 +40,7 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
     EditText editText7;
     Button performMaintenance;
 
+    //creation of date time objects
     Date dateObject = new Date();
     SimpleDateFormat dateFormatter = new SimpleDateFormat( "dd/MM/yyyy" );
     SimpleDateFormat timeFormatter = new SimpleDateFormat( "HH:mm" );
@@ -63,6 +75,8 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
                              Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.fragment_maintenance, container, false);
+
+        //assign widgets
         editText = (EditText)rootView.findViewById( R.id.editText );
         editText2 = (EditText)rootView.findViewById( R.id.editText2 );
         editText3 = (EditText)rootView.findViewById( R.id.editText3 );
@@ -72,12 +86,13 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
         editText7 = (EditText)rootView.findViewById( R.id.editText7 );
         performMaintenance = (Button)rootView.findViewById( R.id.performMaintenance );
 
+        //developer method to manage flags for testing
         /********************************************************
          *               REMOVE ME AFTER TESTING!!!              *
          ********************************************************/
         ( (MainActivity)getActivity() ).setManager(false);
 
-
+        //verify user is logged in, and disable fields if not
         if( !( ( MainActivity )getActivity()).isLoggedIn() )
         {
             disableFields();
@@ -89,6 +104,7 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
             toastScore.show();
         }
 
+        //verify user is a technologist
         if ( ( ( MainActivity )getActivity()).isLoggedIn()
                 && ( ( MainActivity )getActivity()).isManager() )
         {
@@ -103,6 +119,7 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
 
         rootView.findViewById( R.id.performMaintenance ).setOnClickListener(this);
 
+        //ensure fields are blank
         clearFields();
 
         return rootView;
@@ -116,7 +133,7 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
                 getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
-
+    //method to disable fields
     private void disableFields()
     {
         editText.setEnabled(false);
@@ -129,6 +146,7 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
         performMaintenance.setEnabled(false);
     }
 
+    //method to clear fields
     private void clearFields()
     {
         Date dateObject = new Date();
@@ -143,6 +161,7 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
         editText7.setText("");
     }
 
+    //method to check if field has been left blank
     private boolean fieldIsEmpty()
     {
         String fieldChecker = editText.getText().toString();
@@ -167,9 +186,11 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
             return false;
     }
 
+    //handle click of submit button
     @Override
     public void onClick(View v)
     {
+        //check all fields have been entered, this will allow the Comments field to be left blank
         if ( fieldIsEmpty() )
         {
             CharSequence textMessage = ( getActivity().getString( R.string.empty_field_error) );
@@ -180,6 +201,8 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
             toastScore.show();
         }
 
+        //handle insertion of data into database
+        //**************************NEED METHOD TO INSERT DATA!!!****************************
         else
         {
             CharSequence textMessage = "Stuff is inserted into database";

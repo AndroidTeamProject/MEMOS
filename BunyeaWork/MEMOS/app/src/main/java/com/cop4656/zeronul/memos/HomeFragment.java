@@ -2,25 +2,24 @@ package com.cop4656.zeronul.memos;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
- * Created by Zero Nul on 7/16/2015.
+ * Created by Zero Nul (Jason D. Bunyea) on 7/16/2015. This is the home screen that will allow
+ * users to log in.
  */
 public class HomeFragment extends Fragment implements View.OnClickListener
 {
-    private static boolean loggedIn = false;
-    private static boolean manager = false;
-    private static String userID = "";
-    private static String password = "";
-
+    //create widgets
     Button loginButton;
     EditText userIDField;
     EditText passwordField;
@@ -53,13 +52,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener
     {
         final View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
+        //assigment of widgets
         loginButton = (Button)rootView.findViewById( R.id.loginButton );
         userIDField = (EditText)rootView.findViewById( R.id.userID );
         passwordField = (EditText)rootView.findViewById( R.id.password );
 
         rootView.findViewById( R.id.loginButton ).setOnClickListener(this);
 
+        //check if a user is already logged in
+        //this allows a user to come back to the home screen to log out
         if ( ( ( MainActivity )getActivity() ).isLoggedIn() )
+            //"log in" again with existing login information
             login( ( ( MainActivity )getActivity() ).getUserID() );
 
         return rootView;
@@ -74,55 +77,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                 getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
-    public void setUserID( String userID )
-    {
-        this.userID = userID;
-        Intent intent = new Intent( getActivity().getBaseContext(), MainActivity.class );
-        intent.putExtra("userID", userID);
-        getActivity().startActivity(intent);
-
-    }
-
-    public String getUserID()
-    {
-        return userID;
-    }
-
-    public void getPassword()
-    {
-    }
-
-    public void setPassword( String password )
-    {
-        this.password = password;
-    }
-
-    public void setLoggedIn( boolean loggedIn )
-    {
-        this.loggedIn = loggedIn;
-        Intent intent = new Intent( getActivity().getBaseContext(), MainActivity.class );
-        intent.putExtra( "loggedIn", loggedIn );
-        getActivity().startActivity( intent );
-    }
-
-    public boolean isLoggedIn()
-    {
-        return loggedIn;
-    }
-
-    public void setManager( boolean manager )
-    {
-        this.manager = manager;
-        Intent intent = new Intent( getActivity().getBaseContext(), MainActivity.class );
-        intent.putExtra( "manager", manager );
-        getActivity().startActivity( intent );
-    }
-
-    public boolean isManager()
-    {
-        return manager;
-    }
-
+    //log in method
+    //*********************NEED METHOD TO VERIFY USER ACCOUNT!!!***************************
     public void login()
     {
         loginButton.setText(R.string.logout);
@@ -133,6 +89,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         passwordField.setVisibility(View.GONE);
     }
 
+    //overloaded login method to handle inflation when a user is already logged in
     public void login( String userID )
     {
         loginButton.setText(R.string.logout);
@@ -141,7 +98,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         passwordField.setVisibility(View.GONE);
     }
 
-
+    //log out method
     public void logout()
     {
         loginButton.setText(R.string.login);
@@ -152,6 +109,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         passwordField.setVisibility(View.VISIBLE);
     }
 
+    //handle click of login/logout button
     @Override
     public void onClick(View v)
     {
@@ -164,21 +122,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         {
             login();
         }
-    }
-
-    private boolean fieldIsEmpty()
-    {
-        String fieldChecker = userIDField.getText().toString();
-
-        if ( fieldChecker.equals("") )
-            return true;
-
-        fieldChecker = passwordField.getText().toString();
-
-        if ( fieldChecker.equals("") )
-            return true;
-
-        return false;
     }
 
 }

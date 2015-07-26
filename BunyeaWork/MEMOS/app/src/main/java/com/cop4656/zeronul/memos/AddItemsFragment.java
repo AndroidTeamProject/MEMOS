@@ -17,10 +17,13 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Toast;
 
 /**
- * Created by Zero Nul on 7/19/2015.
+ * Created by Zero Nul (Jason D. Bunyea) on 7/19/2015.
+ * Add Items fragment will allow manager users to add
+ * technologist, intruments, and procedures to the database.
  */
 public class AddItemsFragment extends Fragment implements OnItemSelectedListener, View.OnClickListener
 {
+    //strings to hold the input of information and pass to database
     String entryID;
     String entryFirstName;
     String entryLastname;
@@ -36,6 +39,7 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
 
+    //widget creation
     private Spinner itemSpinner;
     private LinearLayout newManager;
     private EditText managerID;
@@ -55,7 +59,6 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
     private EditText frequency;
     private EditText instrumentPerformedOn;
     private Button addButton;
-    private DatabaseAdapter myDB;
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -78,6 +81,7 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
     {
         View rootView = inflater.inflate(R.layout.fragment_additems, container, false);
 
+        //assigment of widgets; widget names are matched to @id names in .xml file
         itemSpinner = (Spinner)rootView.findViewById( R.id.itemSpinner );
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource
@@ -111,20 +115,22 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
 
         addButton = (Button)rootView.findViewById( R.id.addButton );
 
+        //ensure fields are blank
         clearFields();
-        openDB();
 
+        //set manager flag for testing
         /********************************************************
         *               REMOVE ME AFTER TESTING!!!              *
         ********************************************************/
+        ( (MainActivity)getActivity() ).setManager( true );
 
-        ( (MainActivity)getActivity() ).setManager(true);
-
+        //check if a user is logged in, and disable fields if they are not
         if( !( ( MainActivity )getActivity()).isLoggedIn() )
         {
             itemSpinner.setEnabled( false );
             addButton.setEnabled( false );
             newManager.setVisibility(View.GONE);
+            //display message to log in
             CharSequence textMessage = ( getActivity().getString( R.string.login_error ) );
             Context context = getActivity().getApplicationContext();
             int duration = Toast.LENGTH_LONG;
@@ -133,11 +139,13 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
             toast.show();
         }
 
+        //check that user logged in is a manager account, and disable fields if they are not
         if ( ( ( MainActivity )getActivity()).isLoggedIn()
                 && !( ( MainActivity )getActivity()).isManager() )
         {
             itemSpinner.setEnabled( false );
             addButton.setEnabled( false );
+            //display message that manager account is required
             CharSequence textMessage = ( getActivity().getString( R.string.manager_error ) );
             Context context = getActivity().getApplicationContext();
             int duration = Toast.LENGTH_LONG;
@@ -159,25 +167,31 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
                 getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
-
+    //perform actions based on user spinner choice
     @Override
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id)
     {
         // An item was selected. You can retrieve the selected item using
         // parent.getItemAtPosition(pos)
-
         String spinnerChoice = parent.getItemAtPosition(pos).toString();
 
         switch ( spinnerChoice )
         {
+            //if manager is selected from spinner, make newManager fields visible
             case "Manager":
+                //verify logged in and manager status again
+                //this is necessary due to the first item of spinner
+                //being selected during inflation of the fragment
+                //while submit button is disabled and should prevent insertion of data by an
+                //unauthorized account, better safe than sorry and presents a consistent form
                 if ( ( ( MainActivity )getActivity()).isLoggedIn()
                         && ( ( MainActivity )getActivity()).isManager() )
                 {
                     newManager.setVisibility(View.VISIBLE);
                     newManager.setEnabled(true);
                 }
+                //remaining fields are not visible
                 newTechnologist.setVisibility(View.GONE);
                 newTechnologist.setEnabled(false);
                 newInstrument.setVisibility(View.GONE);
@@ -185,6 +199,7 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
                 newProcedure.setVisibility(View.GONE);
                 newProcedure.setEnabled(false);
                 break;
+            //technologist selection will make newTechnologist fields visible and other fields not
             case "Technologist":
                 newManager.setVisibility(View.GONE);
                 newManager.setEnabled(false);
@@ -195,6 +210,7 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
                 newProcedure.setVisibility(View.GONE);
                 newProcedure.setEnabled(false);
                 break;
+            //instrument selection will make newInstrument fields visible and other fields not
             case "Instrument":
                 newManager.setVisibility(View.GONE);
                 newManager.setEnabled(false);
@@ -205,6 +221,7 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
                 newProcedure.setVisibility(View.GONE);
                 newProcedure.setEnabled(false);
                 break;
+            //procedure selection will make newProcedure fields visible and other fields not
             case "Procedure":
                 newManager.setVisibility(View.GONE);
                 newManager.setEnabled(false);
@@ -224,9 +241,11 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
         // Another interface callback
     }
 
+    //when submit button is clicked
     @Override
     public void onClick(View v)
     {
+        //check for empty fields
         if ( fieldIsEmpty() )
         {
             CharSequence textMessage = ( getActivity().getString( R.string.empty_field_error) );
@@ -237,13 +256,24 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
             toast.show();
         }
 
+        //if fields are not empty, insert data into database
+        /**
+         * ********************* NEED METHOD TO INSERT!!!*****************************
+         */
         else
         {
-            addItemToDatabase();
+            CharSequence textMessage = "Stuff is inserted into database";
+            Context context = getActivity().getApplicationContext();
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText( context, textMessage, duration );
+            toast.show();
+
             clearFields();
         }
     }
 
+    //method to clear all edit text fields
     private void clearFields()
     {
         managerID.setText("");
@@ -264,7 +294,7 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
         frequency.setText( "" );
     }
 
-
+    //method to check for empty edit text fields
     private boolean fieldIsEmpty()
     {
         String fieldChecker = managerID.getText().toString();;
@@ -310,7 +340,7 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
                 return true;
         }
 
-        else if(newProcedure.isEnabled())
+        else
         {
             fieldChecker = procedureName.getText().toString();
             if ( fieldChecker.equals( "" ) )
@@ -325,85 +355,4 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
 
         return false;
     }
-
-    private void openDB()
-    {
-        myDB = new DatabaseAdapter(this.getActivity());
-        myDB.open();
-    }
-
-    private void closeDB() {
-        myDB.close();
-    }
-    public void addItemToDatabase()
-    {
-        if(newManager.isEnabled())
-        {
-            Manager m = new Manager(Integer.parseInt(managerID.getText().toString()), managerFirstName.getText().toString(), managerLastName.getText().toString(), "",0);
-            myDB.addManager(m);
-
-            //create manager
-            Manager addedManager = myDB.getManagerById(m.getEmployeeID());
-
-            //send message via toast
-            CharSequence textMessage = "Added Manager: " + addedManager.getEmployeeID() + ", " + addedManager.getLastName();
-            Context context = getActivity().getApplicationContext();
-            int duration = Toast.LENGTH_LONG;
-
-            Toast toast = Toast.makeText( context, textMessage, duration );
-            toast.show();
-
-        }
-        else if(newTechnologist.isEnabled())
-        {
-            Technologist t= new Technologist(Integer.parseInt(technologistID.getText().toString()),technologistFirstName.getText().toString(), technologistLastName.getText().toString(), "");
-            myDB.addTech(t);
-
-            Technologist addedTech = myDB.getTechForID(t.getEmployeeID());
-
-            //send message via toast
-            CharSequence textMessage = "Added Technologist: " + addedTech.getEmployeeID() + ", " + addedTech.getLastName();
-            Context context = getActivity().getApplicationContext();
-            int duration = Toast.LENGTH_LONG;
-
-            Toast toast = Toast.makeText(context, textMessage, duration);
-            toast.show();
-
-        }
-        else if(newInstrument.isEnabled())
-        {
-            System.out.println("This is not where I want to be");
-            Instrument i = new Instrument(Integer.parseInt(instrumentID.getText().toString()),instrumentModel.getText().toString());
-            boolean instAdded = myDB.addInstrument(i);
-
-            Instrument addedInstrument = myDB.getInstrumentById(i.getInstrumentID());
-
-            System.out.println(instAdded);
-
-            //send message via toast
-            CharSequence textMessage = "Added Instrument: " + addedInstrument.getInstrumentID() + ", " + addedInstrument.getModel();
-            Context context = getActivity().getApplicationContext();
-            int duration = Toast.LENGTH_LONG;
-
-            Toast toast = Toast.makeText(context, textMessage, duration);
-            toast.show();
-        }
-        else if(newProcedure.isEnabled())
-        {
-            Procedure p = new Procedure(Integer.parseInt("0"),procedureName.getText().toString(),Integer.parseInt(instrumentPerformedOn.getText().toString()),frequency.getText().toString());
-            myDB.addProcedure(p);
-
-            Procedure addedProcedure = myDB.getProcedureByID(p.getProcedureID());
-
-            //send message via toast
-            CharSequence textMessage = "Added Procedure: " + addedProcedure.getProcedureName() + ", " + addedProcedure.getFrequency();
-            Context context = getActivity().getApplicationContext();
-            int duration = Toast.LENGTH_LONG;
-
-            Toast toast = Toast.makeText(context, textMessage, duration);
-            toast.show();
-        }
-
-    }
-
 }
