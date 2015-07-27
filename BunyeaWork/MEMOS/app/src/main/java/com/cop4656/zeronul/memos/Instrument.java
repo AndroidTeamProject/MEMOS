@@ -6,16 +6,16 @@ package com.cop4656.zeronul.memos;
  */
 public class Instrument
 {
-    private int instrumentID_;
+    private String instrumentID_;
     private String model_;
 
-    Instrument(int instID, String model)
+    Instrument(String instID, String model)
     {
         this.instrumentID_ = instID;
         this.model_ = model;
     }
 
-    public int getInstrumentID()
+    public String getInstrumentID()
     {
         return instrumentID_;
     }

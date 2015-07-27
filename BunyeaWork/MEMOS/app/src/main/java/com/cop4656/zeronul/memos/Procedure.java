@@ -7,12 +7,10 @@ package com.cop4656.zeronul.memos;
 public class Procedure
 {
     //PRIMARY KEY
-    private int procedureID_;
-
     private String procedureName_;
 
     //THIS IS THE FOREIGN KEY FROM INSTRUMENT
-    private int instrumentID_;
+    private String instrumentID_;
 
     /**this instance variable should only be able to take the values
      * Daily
@@ -24,20 +22,15 @@ public class Procedure
     private String frequency_;
 
     //constructor
-    Procedure(int procID, String name, int inst_id, String f)
+    Procedure(String name, String inst_id, String f)
     {
-        this.procedureID_ = procID;
         this.procedureName_ = name;
         this.instrumentID_ = inst_id;
         this.frequency_ = f;
     }
 
-    public int getProcedureID()
-    {
-        return procedureID_;
-    }
 
-    public int getInstrumentID()
+    public String getInstrumentID()
     {
         return instrumentID_;
     }

@@ -17,7 +17,7 @@ public class DatabaseAdapter
     private DatabaseHelper myDBHelper;
     private SQLiteDatabase db;
 
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "myDatabase";
 
 
@@ -50,7 +50,7 @@ public class DatabaseAdapter
     //SQL Statement to create manager table
     public static final String CREATE_MANAGER_TABLE = "CREATE TABLE "
             + MANAGER_TABLE
-            + "(" + MANAGER_ID_COLUMN +  " INTEGER PRIMARY KEY NOT NULL,"
+            + "(" + MANAGER_ID_COLUMN +  " TEXT PRIMARY KEY NOT NULL,"
             + MANAGER_FIRST_NAME + " TEXT NOT NULL, "
             + MANAGER_LAST_NAME +   " TEXT NOT NULL,"
             + MANAGER_DEPARTMENT + " INTEGER NOT NULL,"
@@ -83,7 +83,7 @@ public class DatabaseAdapter
     //SQL Statement to create tech table
     public static final String CREATE_TECH_TABLE = "CREATE TABLE "
             + TECH_TABLE
-            + "(" + TECH_ID_COLUMN +  " INTEGER PRIMARY KEY NOT NULL,"
+            + "(" + TECH_ID_COLUMN +  " TEXT PRIMARY KEY NOT NULL,"
             + TECH_FIRST_NAME + " TEXT NOT NULL, "
             + TECH_LAST_NAME +   " TEXT NOT NULL,"
             + TECH_PASSWORD +" TEXT NOT NULL)";
@@ -93,29 +93,27 @@ public class DatabaseAdapter
      */
 
     //Procedure field numbers
-    public static final int COL_PROC_ID = 0;
-    public static final int COL_PROC_NAME = 1;
-    public static final int COL_PROC_INST_ID_FOREIGN = 2;
-    public static final int COL_PROC_FREQUENCY = 3;
+
+    public static final int COL_PROC_NAME = 0;
+    public static final int COL_PROC_INST_ID_FOREIGN = 1;
+    public static final int COL_PROC_FREQUENCY = 2;
 
     //Procedure table name
     public static final String PROCEDURE_TABLE = "Procedure";
 
     //the columns for Procedure_TABLE
-    public static final String PROCEDURE_ID_COLUMN = "procID";
     public static final String PROCEDURE_NAME = "name";
     public static final String PROCEDURE_INST_ID_FOREIGN = "InstrumentID";
     public static final String PROCEDURE_FREQUENCY = "frequency";
 
-    public static final String[] ALL_PROCEDURE_KEYS = new String[] {PROCEDURE_ID_COLUMN,
+    public static final String[] ALL_PROCEDURE_KEYS = new String[] {
             PROCEDURE_NAME, PROCEDURE_INST_ID_FOREIGN, PROCEDURE_FREQUENCY};
 
     //SQL Statement to create Procedure table
     public static final String CREATE_PROCEDURE_TABLE = "CREATE TABLE "
             + PROCEDURE_TABLE
-            + "(" + PROCEDURE_ID_COLUMN +  " INTEGER PRIMARY KEY NOT NULL,"
-            + PROCEDURE_NAME + " TEXT NOT NULL, "
-            + PROCEDURE_INST_ID_FOREIGN +   " INTEGER NOT NULL,"
+            + "(" + PROCEDURE_NAME + " TEXT PRIMARY KEY NOT NULL, "
+            + PROCEDURE_INST_ID_FOREIGN +   " TEXT NOT NULL,"
             + PROCEDURE_FREQUENCY + " TEXT NOT NULL)";
 
     /************************************************************************
@@ -138,7 +136,7 @@ public class DatabaseAdapter
     //SQL Statement to create Instrument table
     public static final String CREATE_INST_TABLE = "CREATE TABLE "
             + INSTRUMENT_TABLE
-            + "(" + INST_ID_COLUMN +  " INTEGER PRIMARY KEY,"
+            + "(" + INST_ID_COLUMN +  " TEXT PRIMARY KEY,"
             + INST_MODEL_NAME +   " TEXT NOT NULL)";
 
     /************************************************************************
@@ -236,7 +234,7 @@ public class DatabaseAdapter
 
 
     //Insert a row in manager's table
-    public long insertRowManager(int id, String first, String last, String em, int dept, String pw)
+    public long insertRowManager(String id, String first, String last, String em, int dept, String pw)
     {
         ContentValues vals = new ContentValues();
 
@@ -252,9 +250,9 @@ public class DatabaseAdapter
 
     //TO DO ADD MANAGER METHOD THAT TAKES IN A MANAGER AND RETURNS A BOOL.
 
-    public Cursor getRowForManagerID(int managerID)
+    public Cursor getRowForManagerID(String managerID)
     {
-        String where = MANAGER_ID_COLUMN + "=" + managerID;
+        String where = MANAGER_ID_COLUMN + "=" + "\'" + managerID + "\'";
         Cursor c = db.query(true,MANAGER_TABLE,ALL_MANAGER_KEYS,where,null,null,null,null,null);
 
         if(c != null)
@@ -265,18 +263,26 @@ public class DatabaseAdapter
     }
 
 
-    public Manager getManagerForID(int managerID)
+    public Manager getManagerForID(String managerID)
     {
-        String where = MANAGER_ID_COLUMN + "=" + managerID;
+        Manager manager;
+        String where = MANAGER_ID_COLUMN + "=" + "\'" + managerID + "\'";
         Cursor c = db.query(true,MANAGER_TABLE,ALL_MANAGER_KEYS,where,null,null,null,null,null);
 
         if(c != null)
         {
             c.moveToFirst();
+             manager = new Manager(c.getString(COL_MANAGER_ID),
+                    c.getString(COL_MANAGER_FIRST),c.getString(COL_MANAGER_LAST),
+                    c.getString(COL_MANAGER_EMAIL),c.getInt(COL_MANAGER_DEPT),
+                    c.getString(COL_MANAGER_PASSWORD));
+        }
+        else
+        {
+            manager = new Manager("NO_ID", "NO_FIRST", "NO_LAST","NO_EMAIL",-1,"NO_PASS");
         }
 
-        Manager manager = new Manager(c.getInt(COL_MANAGER_ID),
-                c.getString(COL_MANAGER_FIRST),c.getString(COL_MANAGER_LAST),c.getString(COL_MANAGER_EMAIL),c.getInt(COL_MANAGER_DEPT), c.getString(COL_MANAGER_PASSWORD));
+
         return manager;
     }
     //Get all the rows in the manager table
@@ -304,7 +310,7 @@ public class DatabaseAdapter
      * @param pw: password
      * @return a long indicating success
      */
-    public long insertRowTech(int id, String first, String last, String pw)
+    public long insertRowTech(String id, String first, String last, String pw)
     {
         //to do make this function take tech instead
         ContentValues vals = new ContentValues();
@@ -341,9 +347,9 @@ public class DatabaseAdapter
      * @param techID
      * @return cursor pointing to the row represented by techID
      */
-    public Cursor getRowForTechID(int techID)
+    public Cursor getRowForTechID(String techID)
     {
-        String where = TECH_ID_COLUMN + "=" + techID;
+        String where = TECH_ID_COLUMN + "=" + "\'" + techID + "\'";
         Cursor t = db.query(true,TECH_TABLE,ALL_TECH_KEYS,where,null,null,null,null,null);
 
         if(t != null)
@@ -353,21 +359,21 @@ public class DatabaseAdapter
         return t;
     }
 
-    public Technologist getTechForID(int techID)
+    public Technologist getTechForID(String techID)
     {
         Technologist tech;
-        String where = TECH_ID_COLUMN + "=" + techID;
+        String where = TECH_ID_COLUMN + "=" + "\'" + techID + "\'";
         Cursor t = db.query(true,TECH_TABLE,ALL_TECH_KEYS,where,null,null,null,null,null);
 
         if(t != null)
         {
             t.moveToFirst();
-             tech = new Technologist(t.getInt(COL_TECH_ID), t.getString(COL_TECH_FIRST),
+             tech = new Technologist(t.getString(COL_TECH_ID), t.getString(COL_TECH_FIRST),
                     t.getString(COL_TECH_LAST), t.getString(COL_TECH_PASSWORD));
         }
         else
         {
-            tech = new Technologist(-1,"NO FIRST","NO LAST","NO PASSWORD");
+            tech = new Technologist("NO_ID","NO FIRST","NO LAST","NO PASSWORD");
         }
 
         return tech;
@@ -450,7 +456,7 @@ public class DatabaseAdapter
      * @param model : Instrument model
      * @return long to confirm success
      */
-    public long insertRowInstrument(int id, String model)
+    public long insertRowInstrument(String id, String model)
     {
         ContentValues vals = new ContentValues();
 
@@ -466,9 +472,9 @@ public class DatabaseAdapter
      * @param InstID
      * @return a cursor that points to the row with id = InstID
      */
-    public Cursor getRowForInstrumentID(int InstID)
+    public Cursor getRowForInstrumentID(String InstID)
     {
-        String where = INST_ID_COLUMN + "=" + InstID;
+        String where = INST_ID_COLUMN + "=" + "\'" + InstID + "\'";
         Cursor t = db.query(true,INSTRUMENT_TABLE,ALL_INST_KEYS,where,null,null,null,null,null);
 
         if(t != null)
@@ -481,7 +487,7 @@ public class DatabaseAdapter
     //
     public Cursor getRowForInstrumentModel(String name)
     {
-        String where = INST_MODEL_NAME + "=" + name;
+        String where = INST_MODEL_NAME + "=" + "\'" + name + "\'";
         Cursor t = db.query(true,INSTRUMENT_TABLE,ALL_INST_KEYS,where,null,null,null,null,null);
 
         if(t != null)
@@ -511,17 +517,15 @@ public class DatabaseAdapter
 
     /**
      * Inserts a row in the procedure table
-     * @param id: procedure ID
      * @param procName: name of procedure
      * @param instID: Instrument ID
      * @param freq: frequency to perform procedure
      * @return long to confirm success
      */
-    public long insertRowProcedure(int id, String procName, int instID, String freq)
+    public long insertRowProcedure(String procName, String instID, String freq)
     {
         ContentValues vals = new ContentValues();
 
-        vals.put(PROCEDURE_ID_COLUMN, id);
         vals.put(PROCEDURE_NAME, procName);
         vals.put(PROCEDURE_INST_ID_FOREIGN, instID);
         vals.put(PROCEDURE_FREQUENCY, freq);
@@ -531,12 +535,12 @@ public class DatabaseAdapter
 
     /**
      * Gets a row in procedure table
-     * @param procID: procedure ID
+     * @param name: procedure name
      * @return: a cursor that points to the row with id = procID
      */
-    public Cursor getRowForProcedureID(int procID)
+    public Cursor getRowForProcedureName(String name)
     {
-        String where = PROCEDURE_ID_COLUMN + "=" + procID;
+        String where = PROCEDURE_NAME + "=" + "\'" + name + "\'";
         Cursor t = db.query(true,PROCEDURE_TABLE,ALL_PROCEDURE_KEYS,where,null,null,null,null,null);
 
         if(t != null)
@@ -727,11 +731,11 @@ public class DatabaseAdapter
     public void clearProcedureTable()
     {
         Cursor procedure_row = getAllRowsForProcedure();
-        int rowID = procedure_row.getColumnIndexOrThrow(PROCEDURE_ID_COLUMN);
+        int rowID = procedure_row.getColumnIndexOrThrow(PROCEDURE_NAME);
         if(procedure_row.moveToFirst())
         {
             do {
-                deleteRow(PROCEDURE_TABLE, PROCEDURE_ID_COLUMN, procedure_row.getInt(rowID));
+                deleteRow(PROCEDURE_TABLE, PROCEDURE_NAME, procedure_row.getInt(rowID));
             } while (procedure_row.moveToNext());
         }
         procedure_row.close();
@@ -816,7 +820,7 @@ public class DatabaseAdapter
 
     }
 
-    public Manager getManagerById(int managerId)
+    public Manager getManagerById(String managerId)
     {
         return getManagerForID(managerId);
     }
@@ -832,7 +836,7 @@ public class DatabaseAdapter
                 tech.getLastName(), tech.getEmail()) > 0;
     }
 
-    public Technologist getTechById(int techId)
+    public Technologist getTechById(String techId)
     {
         return getTechForID(techId);
     }
@@ -843,17 +847,17 @@ public class DatabaseAdapter
      * @param id
      * @return password
      */
-    public String getPasswordForID(int id)
+    public String getPasswordForID(String id)
     {
         String password = "NO PASSWORD";
         Technologist technologist = getTechById(id);
         Manager manager = getManagerById(id);
 
-        if(technologist.getEmployeeID()!= -1)
+        if(technologist.getEmployeeID()!= "NO_ID")
         {
             password = technologist.getPassword();
         }
-        else if (manager.getEmployeeID() != -1)
+        else if (manager.getEmployeeID() != "NO_ID")
         {
             password = manager.getPassword();
         }
@@ -892,24 +896,24 @@ public class DatabaseAdapter
                 instrument.getModel()) > 0;
     }
 
-    public Instrument getInstrumentById(int instrumentId)
+    public Instrument getInstrumentById(String instrumentId)
     {
         //to do
         Cursor  i =  getRowForInstrumentID(instrumentId);
-        Instrument instrument = new Instrument(i.getInt(COL_INST_ID),i.getString(COL_INST_MODEL_NAME));
+        Instrument instrument = new Instrument(i.getString(COL_INST_ID),i.getString(COL_INST_MODEL_NAME));
         return instrument;
     }
 
     public boolean addProcedure(Procedure proc)
     {
-        return insertRowProcedure(proc.getProcedureID(), proc.getProcedureName(),proc.getInstrumentID(), proc.getFrequency()) > 0;
+        return insertRowProcedure(proc.getProcedureName(),proc.getInstrumentID(), proc.getFrequency()) > 0;
     }
 
-    public Procedure getProcedureByID(int procedureID)
+    public Procedure getProcedureByName(String name)
     {
-        Cursor p = getRowForProcedureID(procedureID);
-        Procedure proc = new Procedure(p.getInt(COL_PROC_ID), p.getString(COL_PROC_NAME),
-                p.getInt(COL_PROC_INST_ID_FOREIGN), p.getString(COL_PROC_FREQUENCY));
+        Cursor p = getRowForProcedureName(name);
+        Procedure proc = new Procedure(p.getString(COL_PROC_NAME),
+                p.getString(COL_PROC_INST_ID_FOREIGN), p.getString(COL_PROC_FREQUENCY));
         return proc;
     }
 

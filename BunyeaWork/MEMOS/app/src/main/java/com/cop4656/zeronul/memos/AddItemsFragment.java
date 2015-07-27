@@ -123,6 +123,9 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
         //ensure fields are blank
         clearFields();
 
+        //open database
+        openDB();
+
         //set manager flag for testing
         /********************************************************
         *               REMOVE ME AFTER TESTING!!!              *
@@ -267,12 +270,15 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
          */
         else
         {
+            //insert to database
+            addItemToDatabase();
+
             CharSequence textMessage = "Stuff is inserted into database";
             Context context = getActivity().getApplicationContext();
             int duration = Toast.LENGTH_LONG;
 
             Toast toast = Toast.makeText( context, textMessage, duration );
-            toast.show();
+            //toast.show();
 
             clearFields();
         }
@@ -380,12 +386,15 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
     {
         if(newManager.isEnabled())
         {
-            Manager m = new Manager(Integer.parseInt(managerID.getText().toString()),
+            //Create manager
+            Manager m = new Manager(managerID.getText().toString(),
                     managerFirstName.getText().toString(), managerLastName.getText().toString(),
                     managerEmail.getText().toString(),0,managerPassword.getText().toString());
+
+            //Add manager to database
             myDB.addManager(m);
 
-            //create manager
+            //create  added manager
             Manager addedManager = myDB.getManagerById(m.getEmployeeID());
 
             //send message via toast
@@ -399,10 +408,10 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
         }
         else if(newTechnologist.isEnabled())
         {
-            Technologist t= new Technologist(Integer.parseInt(technologistID.getText().toString()),
+            Technologist t= new Technologist(technologistID.getText().toString(),
                     technologistFirstName.getText().toString(), technologistLastName.getText().toString(),
                     technologistPassword.getText().toString());
-            
+
             myDB.addTech(t);
 
             Technologist addedTech = myDB.getTechForID(t.getEmployeeID());
@@ -419,7 +428,7 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
         else if(newInstrument.isEnabled())
         {
             System.out.println("This is not where I want to be");
-            Instrument i = new Instrument(Integer.parseInt(instrumentID.getText().toString()),instrumentModel.getText().toString());
+            Instrument i = new Instrument(instrumentID.getText().toString(),instrumentModel.getText().toString());
             boolean instAdded = myDB.addInstrument(i);
 
             Instrument addedInstrument = myDB.getInstrumentById(i.getInstrumentID());
@@ -436,10 +445,11 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
         }
         else if(newProcedure.isEnabled())
         {
-            Procedure p = new Procedure(Integer.parseInt("0"),procedureName.getText().toString(),Integer.parseInt(instrumentPerformedOn.getText().toString()),frequency.getText().toString());
+
+            Procedure p = new Procedure(procedureName.getText().toString(),instrumentPerformedOn.getText().toString(),frequency.getText().toString());
             myDB.addProcedure(p);
 
-            Procedure addedProcedure = myDB.getProcedureByID(p.getProcedureID());
+            Procedure addedProcedure = myDB.getProcedureByName(p.getProcedureName());
 
             //send message via toast
             CharSequence textMessage = "Added Procedure: " + addedProcedure.getProcedureName() + ", " + addedProcedure.getFrequency();

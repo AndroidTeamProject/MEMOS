@@ -10,14 +10,14 @@ package com.cop4656.zeronul.memos;
 public class Employee
 {
     //variables
-    private int EmployeeID_;
+    private String EmployeeID_;
     private String firstName_;
     private String lastName_;
     private String email_;
     private String password_ = "DEFAULT";
 
     //constructor
-    Employee(int employeeID, String firstName, String lastName, String email)
+    Employee(String employeeID, String firstName, String lastName, String email)
     {
         this.EmployeeID_ = employeeID;
         this.firstName_ = firstName;
@@ -26,7 +26,7 @@ public class Employee
     }
 
     //Getters
-    public int getEmployeeID()
+    public String getEmployeeID()
     {
         return EmployeeID_;
     }
