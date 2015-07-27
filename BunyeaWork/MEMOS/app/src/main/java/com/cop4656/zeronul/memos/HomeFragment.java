@@ -2,16 +2,13 @@ package com.cop4656.zeronul.memos;
 
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 /**
  * Created by Zero Nul (Jason D. Bunyea) on 7/16/2015. This is the home screen that will allow
@@ -23,6 +20,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener
     Button loginButton;
     EditText userIDField;
     EditText passwordField;
+
+    //database instance
+    private DatabaseAdapter myDB;
 
     /**
      * The fragment argument representing the section number for this
@@ -58,6 +58,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         passwordField = (EditText)rootView.findViewById( R.id.password );
 
         rootView.findViewById( R.id.loginButton ).setOnClickListener(this);
+
+        //open the database
+        openDB();
 
         //check if a user is already logged in
         //this allows a user to come back to the home screen to log out
@@ -122,6 +125,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         {
             login();
         }
+    }
+
+    private void openDB()
+    {
+        myDB = new DatabaseAdapter(this.getActivity());
+        myDB.open();
+    }
+
+    private void closeDB() {
+        myDB.close();
     }
 
 }

@@ -49,4 +49,8 @@ public class Employee
     public String getEmail() {
         return email_;
     }
+
+    public String getPassword() {
+        return password_;
+    }
 }

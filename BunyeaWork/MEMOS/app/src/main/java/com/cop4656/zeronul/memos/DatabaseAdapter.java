@@ -31,6 +31,7 @@ public class DatabaseAdapter
     public static final int COL_MANAGER_LAST = 2;
     public static final int COL_MANAGER_EMAIL = 3;
     public static final int COL_MANAGER_DEPT = 4;
+    public static final int COL_MANAGER_PASSWORD = 5;
 
     //Manager table name
     public static final String MANAGER_TABLE = "Manager";
@@ -41,9 +42,10 @@ public class DatabaseAdapter
     public static final String MANAGER_LAST_NAME = "lastName";
     public static final String MANAGER_EMAIL = "email";
     public static final String MANAGER_DEPARTMENT = "department";
+    public static final String MANAGER_PASSWORD = "managerPassword";
 
     public static final String[] ALL_MANAGER_KEYS = new String[] {MANAGER_ID_COLUMN,
-            MANAGER_FIRST_NAME, MANAGER_LAST_NAME, MANAGER_EMAIL, MANAGER_DEPARTMENT};
+            MANAGER_FIRST_NAME, MANAGER_LAST_NAME, MANAGER_EMAIL, MANAGER_DEPARTMENT, MANAGER_PASSWORD};
 
     //SQL Statement to create manager table
     public static final String CREATE_MANAGER_TABLE = "CREATE TABLE "
@@ -52,7 +54,8 @@ public class DatabaseAdapter
             + MANAGER_FIRST_NAME + " TEXT NOT NULL, "
             + MANAGER_LAST_NAME +   " TEXT NOT NULL,"
             + MANAGER_DEPARTMENT + " INTEGER NOT NULL,"
-            + MANAGER_EMAIL + " TEXT NOT NULL)";
+            + MANAGER_EMAIL + " TEXT NOT NULL,"
+            + MANAGER_PASSWORD + " TEXT NOT NULL)";
 
     /*******************************************************************************
      * TECHNOLOGIST TABLE INFORMATION
@@ -62,7 +65,7 @@ public class DatabaseAdapter
     public static final int COL_TECH_ID = 0;
     public static final int COL_TECH_FIRST = 1;
     public static final int COL_TECH_LAST = 2;
-    public static final int COL_TECH_EMAIL = 3;
+    public static final int COL_TECH_PASSWORD = 3;
 
     //Tech table name
     public static final String TECH_TABLE = "Technologist";
@@ -71,10 +74,11 @@ public class DatabaseAdapter
     public static final String TECH_ID_COLUMN = "techID";
     public static final String TECH_FIRST_NAME = "firstName";
     public static final String TECH_LAST_NAME = "lastName";
-    public static final String TECH_EMAIL = "email";
+    public static final String TECH_PASSWORD = "techPassword";
+
 
     public static final String[] ALL_TECH_KEYS = new String[] {TECH_ID_COLUMN,
-            TECH_FIRST_NAME, TECH_LAST_NAME, TECH_EMAIL};
+            TECH_FIRST_NAME, TECH_LAST_NAME, TECH_PASSWORD};
 
     //SQL Statement to create tech table
     public static final String CREATE_TECH_TABLE = "CREATE TABLE "
@@ -82,7 +86,7 @@ public class DatabaseAdapter
             + "(" + TECH_ID_COLUMN +  " INTEGER PRIMARY KEY NOT NULL,"
             + TECH_FIRST_NAME + " TEXT NOT NULL, "
             + TECH_LAST_NAME +   " TEXT NOT NULL,"
-            + TECH_EMAIL + " TEXT NOT NULL)";
+            + TECH_PASSWORD +" TEXT NOT NULL)";
 
     /************************************************************************
      * PROCEDURE TABLE INFORMATION
@@ -232,7 +236,7 @@ public class DatabaseAdapter
 
 
     //Insert a row in manager's table
-    public long insertRowManager(int id, String first, String last, String em, int dept)
+    public long insertRowManager(int id, String first, String last, String em, int dept, String pw)
     {
         ContentValues vals = new ContentValues();
 
@@ -241,6 +245,7 @@ public class DatabaseAdapter
         vals.put(MANAGER_LAST_NAME, last);
         vals.put(MANAGER_EMAIL, em);
         vals.put(MANAGER_DEPARTMENT, dept);
+        vals.put(MANAGER_PASSWORD, pw);
 
         return db.insert(MANAGER_TABLE, null, vals);
     }
@@ -271,7 +276,7 @@ public class DatabaseAdapter
         }
 
         Manager manager = new Manager(c.getInt(COL_MANAGER_ID),
-                c.getString(COL_MANAGER_FIRST),c.getString(COL_MANAGER_LAST),c.getString(COL_MANAGER_EMAIL),c.getInt(COL_MANAGER_DEPT));
+                c.getString(COL_MANAGER_FIRST),c.getString(COL_MANAGER_LAST),c.getString(COL_MANAGER_EMAIL),c.getInt(COL_MANAGER_DEPT), c.getString(COL_MANAGER_PASSWORD));
         return manager;
     }
     //Get all the rows in the manager table
@@ -296,10 +301,10 @@ public class DatabaseAdapter
      * @param id: id of the new tech
      * @param first : first name
      * @param last: last name
-     * @param em: email
+     * @param pw: password
      * @return a long indicating success
      */
-    public long insertRowTech(int id, String first, String last, String em)
+    public long insertRowTech(int id, String first, String last, String pw)
     {
         //to do make this function take tech instead
         ContentValues vals = new ContentValues();
@@ -307,7 +312,7 @@ public class DatabaseAdapter
         vals.put(TECH_ID_COLUMN, id);
         vals.put(TECH_FIRST_NAME, first);
         vals.put(TECH_LAST_NAME, last);
-        vals.put(TECH_EMAIL, em);
+        vals.put(TECH_PASSWORD, pw);
 
         return db.insert(TECH_TABLE, null, vals);
     }
@@ -350,16 +355,21 @@ public class DatabaseAdapter
 
     public Technologist getTechForID(int techID)
     {
+        Technologist tech;
         String where = TECH_ID_COLUMN + "=" + techID;
         Cursor t = db.query(true,TECH_TABLE,ALL_TECH_KEYS,where,null,null,null,null,null);
 
         if(t != null)
         {
             t.moveToFirst();
+             tech = new Technologist(t.getInt(COL_TECH_ID), t.getString(COL_TECH_FIRST),
+                    t.getString(COL_TECH_LAST), t.getString(COL_TECH_PASSWORD));
+        }
+        else
+        {
+            tech = new Technologist(-1,"NO FIRST","NO LAST","NO PASSWORD");
         }
 
-        Technologist tech = new Technologist(t.getInt(COL_TECH_ID), t.getString(COL_TECH_FIRST),
-                t.getString(COL_TECH_LAST), t.getString(COL_TECH_EMAIL));
         return tech;
     }
 
@@ -794,13 +804,65 @@ public class DatabaseAdapter
 
     }
 
+    /*
+    MANAGER API FUNCTIONS
+     */
+
     public boolean addManager(Manager manager)
     {
 
        return insertRowManager(manager.getEmployeeID(), manager.getFirstName(), manager.getLastName(),
-               manager.getEmail(), manager.getDepartmentNumber()) > 0;
+               manager.getEmail(), manager.getDepartmentNumber(), manager.getPassword()) > 0;
 
     }
+
+    public Manager getManagerById(int managerId)
+    {
+        return getManagerForID(managerId);
+    }
+
+    /*
+    TECH API FUNCTIONS
+     */
+
+    public boolean addTech(Technologist tech)
+    {
+
+        return insertRowTech(tech.getEmployeeID(), tech.getFirstName(),
+                tech.getLastName(), tech.getEmail()) > 0;
+    }
+
+    public Technologist getTechById(int techId)
+    {
+        return getTechForID(techId);
+    }
+
+
+    /**
+     * Return password for id entered if it exist in the manager or tech tables
+     * @param id
+     * @return password
+     */
+    public String getPasswordForID(int id)
+    {
+        String password = "NO PASSWORD";
+        Technologist technologist = getTechById(id);
+        Manager manager = getManagerById(id);
+
+        if(technologist.getEmployeeID()!= -1)
+        {
+            password = technologist.getPassword();
+        }
+        else if (manager.getEmployeeID() != -1)
+        {
+            password = manager.getPassword();
+        }
+        return password;
+    }
+
+    /*
+    LOG API FUNCTIONS
+     */
 
     public boolean addLog(Log log)
     {
@@ -816,27 +878,20 @@ public class DatabaseAdapter
 
         return retrievedLog;
     }
-    public boolean addTech(Technologist tech)
-    {
 
-        return insertRowTech(tech.getEmployeeID(), tech.getFirstName(),
-                tech.getLastName(), tech.getEmail()) > 0;
-    }
-    public Manager getManagerById(int managerId)
-    {
-        return getManagerForID(managerId);
-    }
 
-    public Technologist getTechById(int techId)
-    {
-        return getTechForID(techId);
-    }
+
+    /*
+    PROCEDURE AND INSTRUMENT API
+     */
+
 
     public boolean addInstrument(Instrument instrument)
     {
         return insertRowInstrument(instrument.getInstrumentID(),
                 instrument.getModel()) > 0;
     }
+
     public Instrument getInstrumentById(int instrumentId)
     {
         //to do

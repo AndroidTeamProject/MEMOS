@@ -10,7 +10,7 @@ public class Manager extends Employee
     private int departmentNumber_;
 
     //constructor
-    Manager(int id,String fName,String lName, String email,int deptNumber)
+    Manager(int id,String fName,String lName, String email,int deptNumber, String password)
     {
         super(id,fName,lName, email);
         departmentNumber_ = deptNumber;

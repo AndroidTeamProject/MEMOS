@@ -380,7 +380,9 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
     {
         if(newManager.isEnabled())
         {
-            Manager m = new Manager(Integer.parseInt(managerID.getText().toString()), managerFirstName.getText().toString(), managerLastName.getText().toString(), "",0);
+            Manager m = new Manager(Integer.parseInt(managerID.getText().toString()),
+                    managerFirstName.getText().toString(), managerLastName.getText().toString(),
+                    managerEmail.getText().toString(),0,managerPassword.getText().toString());
             myDB.addManager(m);
 
             //create manager
@@ -397,7 +399,10 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
         }
         else if(newTechnologist.isEnabled())
         {
-            Technologist t= new Technologist(Integer.parseInt(technologistID.getText().toString()),technologistFirstName.getText().toString(), technologistLastName.getText().toString(), "");
+            Technologist t= new Technologist(Integer.parseInt(technologistID.getText().toString()),
+                    technologistFirstName.getText().toString(), technologistLastName.getText().toString(),
+                    technologistPassword.getText().toString());
+            
             myDB.addTech(t);
 
             Technologist addedTech = myDB.getTechForID(t.getEmployeeID());
