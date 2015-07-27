@@ -45,12 +45,13 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
     private EditText managerID;
     private EditText managerFirstName;
     private EditText managerLastName;
-    private EditText managerPosition;
+    private EditText managerPassword;
+    private EditText managerEmail;
     private LinearLayout newTechnologist;
     private EditText technologistID;
     private EditText technologistFirstName;
     private EditText technologistLastName;
-    private EditText technologistPosition;
+    private EditText technologistPassword;
     private LinearLayout newInstrument;
     private EditText instrumentID;
     private EditText instrumentModel;
@@ -59,10 +60,9 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
     private EditText frequency;
     private EditText instrumentPerformedOn;
     private Button addButton;
-<<<<<<< Updated upstream
-=======
+
     public DatabaseAdapter myDB;
->>>>>>> Stashed changes
+
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -100,13 +100,14 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
         managerID = (EditText)rootView.findViewById( R.id.managerID );
         managerFirstName = (EditText)rootView.findViewById( R.id.managerFirstName );
         managerLastName = (EditText)rootView.findViewById( R.id.managerLastName );
-        managerPosition = (EditText)rootView.findViewById( R.id.managerPosition );
+        managerPassword = (EditText)rootView.findViewById( R.id.managerPassword );
+        managerEmail = (EditText)rootView.findViewById( R.id.managerEmail );
 
         newTechnologist =(LinearLayout)rootView.findViewById( R.id.newTechnologist);
         technologistID = (EditText)rootView.findViewById( R.id.technologistID );
         technologistFirstName = (EditText)rootView.findViewById( R.id.technologistFirstName);
         technologistLastName = (EditText)rootView.findViewById( R.id.technologistLastName );
-        technologistPosition = (EditText)rootView.findViewById( R.id.technologistPosition );
+        technologistPassword = (EditText)rootView.findViewById( R.id.technologistPassword );
 
         newInstrument = (LinearLayout)rootView.findViewById( R.id.newInstrument);
         instrumentID = (EditText)rootView.findViewById( R.id.instrumentID );
@@ -283,12 +284,13 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
         managerID.setText("");
         managerFirstName.setText("");
         managerLastName.setText("");
-        managerPosition.setText("");
+        managerPassword.setText("");
+        managerEmail.setText( "" );
 
         technologistID.setText("");
         technologistFirstName.setText("");
         technologistLastName.setText("");
-        technologistPosition.setText("");
+        technologistPassword.setText("");
 
         instrumentID.setText("");
         instrumentModel.setText("");
@@ -313,9 +315,12 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
             fieldChecker = managerLastName.getText().toString();
             if ( fieldChecker.equals( "" ) )
                 return true;
-            fieldChecker = managerPosition.getText().toString();
-            if ( fieldChecker.equals( "" ) )
-                return true;
+//            fieldChecker = managerPassword.getText().toString();
+//            if ( fieldChecker.equals( "" ) )
+//               return true;
+//            fieldChecker = managerEmail.getText().toString();
+//            if ( fieldChecker.equals( "" ) )
+//                return true;
         }
 
         else if ( newTechnologist.isEnabled() )
@@ -329,7 +334,7 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
             fieldChecker = technologistLastName.getText().toString();
             if ( fieldChecker.equals( "" ) )
                 return true;
-            fieldChecker = technologistPosition.getText().toString();
+            fieldChecker = technologistPassword.getText().toString();
             if ( fieldChecker.equals( "" ) )
                 return true;
         }
@@ -359,8 +364,6 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
 
         return false;
     }
-<<<<<<< Updated upstream
-=======
 
     private void openDB()
     {
@@ -444,5 +447,4 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
 
     }
 
->>>>>>> Stashed changes
 }

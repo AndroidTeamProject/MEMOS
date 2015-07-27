@@ -1,11 +1,16 @@
 			TO DO LIST:
 
-1. Create password entry fields for technologists being added
-2. Create password and email fields for managers being added
+1. Create password entry fields for technologists being added ----Completed JDB----
+2. Create password and email fields for managers being added ----Completed JDB----
 3. Create method for querying manager account to verify password
 4. Create method for querying technologists account to verify password
-5. Create method for inserting new managers, technologists, instruments, and procedures into database
-6. Create method for inserting logged maintenace into database
+5. Create method for inserting new managers, technologists, instruments, and procedures into database ----Completed DB----
+6. Create method for inserting logged maintenace into database ----Completed DB----
 7. Verify creation of log.txt, and attachment to email. Debug in the event that files are being created
 8. Incorporate spinners for instrument names, instrument ID, procedure names, shifts
 9. Remove generic methods, test methods, test data, test variables.
+10. Update insert methods/database for technologists to include password field
+11. Update insert methods/database for managers to include password and email fields
+12. Investigate maintenance log message. Hardcoded 3 causing crash of app. Message commented out to test.
+13. Determine required value types. ID values are expected type INT? Using alpha characters causes crash.
+    If type INT are required, modification of fields/code will need to ensure not alpha characters.

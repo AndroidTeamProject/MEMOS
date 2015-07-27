@@ -29,7 +29,7 @@
     <string name="last_name">Last Name</string>
     <string name="employeeID">Employee ID</string>
     <string name="managerID">Manager ID</string>
-    <string name="position">Position</string>
+    <string name="managerEmail">Manager Email</string>
     <string name="instrumentID">Instrument ID or Serial Number</string>
     <string name="model">Instrument Model</string>
     <string name="procedure">Procedure Name</string>

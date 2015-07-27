@@ -40,11 +40,8 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
     EditText editText7;
     Button performMaintenance;
 
-<<<<<<< Updated upstream
-    //creation of date time objects
-=======
 
->>>>>>> Stashed changes
+    //creation of date time objects
     Date dateObject = new Date();
     SimpleDateFormat dateFormatter = new SimpleDateFormat( "dd/MM/yyyy" );
     SimpleDateFormat timeFormatter = new SimpleDateFormat( "HH:mm" );
@@ -90,12 +87,8 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
         editText7 = (EditText)rootView.findViewById( R.id.editText7 );
         performMaintenance = (Button)rootView.findViewById( R.id.performMaintenance );
 
-<<<<<<< Updated upstream
-        //developer method to manage flags for testing
-=======
         openDB();
 
->>>>>>> Stashed changes
         /********************************************************
          *               REMOVE ME AFTER TESTING!!!              *
          ********************************************************/
@@ -225,16 +218,17 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
             myDatabase.addLog(l);
 
             //display a log(not the actual current log)
-            Log addedLog = myDatabase.getLogByID(3);
+            //Log addedLog = myDatabase.getLogByID(3);
 
             //show it in a toast
+            /*
             CharSequence textMessage = addedLog.getInstrumentID() + " " + addedLog.getProcedureID() + " " + addedLog.getTechID() + " " + addedLog.getDate();
             Context context = getActivity().getApplicationContext();
             int duration = Toast.LENGTH_LONG;
 
             Toast toastScore = Toast.makeText( context, textMessage, duration );
             toastScore.show();
-
+            */
             clearFields();
         }
     }
@@ -248,6 +242,5 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
     private void closeDB() {
         myDatabase.close();
     }
-
 
 }

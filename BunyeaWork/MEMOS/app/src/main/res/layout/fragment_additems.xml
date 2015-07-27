@@ -49,8 +49,14 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/managerPosition"
-            android:hint="@string/position"/>
+            android:id="@+id/managerPassword"
+            android:hint="@string/password"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/managerEmail"
+            android:hint="@string/managerEmail"/>
 
     </LinearLayout>
 
@@ -82,8 +88,8 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/technologistPosition"
-            android:hint="@string/position"/>
+            android:id="@+id/technologistPassword"
+            android:hint="@string/password"/>
 
     </LinearLayout>
 
