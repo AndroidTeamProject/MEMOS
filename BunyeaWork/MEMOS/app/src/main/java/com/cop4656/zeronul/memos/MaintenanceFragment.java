@@ -40,7 +40,11 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
     EditText editText7;
     Button performMaintenance;
 
+<<<<<<< Updated upstream
     //creation of date time objects
+=======
+
+>>>>>>> Stashed changes
     Date dateObject = new Date();
     SimpleDateFormat dateFormatter = new SimpleDateFormat( "dd/MM/yyyy" );
     SimpleDateFormat timeFormatter = new SimpleDateFormat( "HH:mm" );
@@ -52,7 +56,7 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
-
+    private DatabaseAdapter myDatabase;
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -86,7 +90,12 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
         editText7 = (EditText)rootView.findViewById( R.id.editText7 );
         performMaintenance = (Button)rootView.findViewById( R.id.performMaintenance );
 
+<<<<<<< Updated upstream
         //developer method to manage flags for testing
+=======
+        openDB();
+
+>>>>>>> Stashed changes
         /********************************************************
          *               REMOVE ME AFTER TESTING!!!              *
          ********************************************************/
@@ -153,12 +162,15 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
         String date = dateFormatter.format( dateObject );
         String time = timeFormatter.format( dateObject );
         editText.setText("");
-        editText2.setText( ( (MainActivity)getActivity() ).getUserID() );
-        editText3.setText( date );
-        editText4.setText( time );
+        editText2.setText(((MainActivity) getActivity()).getUserID());
+        editText3.setText(date);
+        editText4.setText(time);
         editText5.setText("");
         editText6.setText("");
         editText7.setText("");
+
+        editText3.setEnabled(false);
+        editText4.setEnabled(false);
     }
 
     //method to check if field has been left blank
@@ -204,8 +216,19 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
         //handle insertion of data into database
         //**************************NEED METHOD TO INSERT DATA!!!****************************
         else
-        {
-            CharSequence textMessage = "Stuff is inserted into database";
+        {   //Log(int instrumentID, int procedureID,int techID,String date, String time, String shift, String comment)
+            Log l = new Log(1, Integer.parseInt(editText.getText().toString()),Integer.parseInt(editText5.getText().toString()),
+                    Integer.parseInt(editText2.getText().toString()),editText3.getText().toString(),editText4.getText().toString(),
+                    editText6.getText().toString(), editText7.getText().toString());
+
+            //put log in the database
+            myDatabase.addLog(l);
+
+            //display a log(not the actual current log)
+            Log addedLog = myDatabase.getLogByID(3);
+
+            //show it in a toast
+            CharSequence textMessage = addedLog.getInstrumentID() + " " + addedLog.getProcedureID() + " " + addedLog.getTechID() + " " + addedLog.getDate();
             Context context = getActivity().getApplicationContext();
             int duration = Toast.LENGTH_LONG;
 
@@ -215,4 +238,16 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
             clearFields();
         }
     }
+
+    private void openDB()
+    {
+        myDatabase = new DatabaseAdapter(this.getActivity());
+        myDatabase.open();
+    }
+
+    private void closeDB() {
+        myDatabase.close();
+    }
+
+
 }

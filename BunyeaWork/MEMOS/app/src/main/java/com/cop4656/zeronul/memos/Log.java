@@ -7,16 +7,16 @@ package com.cop4656.zeronul.memos;
 public class Log
 {
     //PRIMARY KEY
-    private long logID_;
+    private int logID_;
 
     //this is the id of the instrument (FOREIGN KEY)
-    private long instrumentID_;
+    private int instrumentID_;
 
     //procedure performed (FOREIGN KEY)
-    private long procedureID_;
+    private int procedureID_;
 
     //Who performed the procedure (FOREIGN KEY)
-    private long techID_;
+    private int techID_;
 
     //date procedure was performed
     private String date_;
@@ -27,7 +27,9 @@ public class Log
     //on what shift was it performed
     private String shift_;
 
-    Log(long logID,long instrumentID, long procedureID,long techID,String date, String time, String shift)
+    private String comment_;
+
+    Log(int logID, int instrumentID, int procedureID,int techID,String date, String time, String shift, String comment)
     {
         this.logID_ = logID;
         this.instrumentID_ = instrumentID;
@@ -36,24 +38,22 @@ public class Log
         this.date_ = date;
         this.shift_ = shift;
         this.time_ = time;
+        this.comment_ = comment;
     }
 
-    public long getLogID()
-    {
-        return logID_;
-    }
+    //public int getLogID() {return logID_;}
 
-    public long getInstrumentID()
+    public int getInstrumentID()
     {
         return instrumentID_;
     }
 
-    public long getProcedureID()
+    public int getProcedureID()
     {
         return procedureID_;
     }
 
-    public long getTechID()
+    public int getTechID()
     {
         return techID_;
     }
@@ -73,5 +73,13 @@ public class Log
         return time_;
     }
 
+    public String getComment()
+    {
+        return comment_;
+    }
 
+
+    public int getLogId() {
+        return logID_;
+    }
 }

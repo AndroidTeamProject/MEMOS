@@ -17,7 +17,7 @@ public class DatabaseAdapter
     private DatabaseHelper myDBHelper;
     private SQLiteDatabase db;
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "myDatabase";
 
 
@@ -134,7 +134,7 @@ public class DatabaseAdapter
     //SQL Statement to create Instrument table
     public static final String CREATE_INST_TABLE = "CREATE TABLE "
             + INSTRUMENT_TABLE
-            + "(" + INST_ID_COLUMN +  " INTEGER PRIMARY KEY NOT NULL,"
+            + "(" + INST_ID_COLUMN +  " INTEGER PRIMARY KEY,"
             + INST_MODEL_NAME +   " TEXT NOT NULL)";
 
     /************************************************************************
@@ -159,7 +159,7 @@ public class DatabaseAdapter
     //SQL Statement to create Instrument table
     public static final String CREATE_DEPT_TABLE = "CREATE TABLE "
             + DEPARTMENT_TABLE
-            + "(" + DEPT_ID_COLUMN +  " INTEGER PRIMARY KEY NOT NULL,"
+            + "(" + DEPT_ID_COLUMN +  " INTEGER PRIMARY KEY,"
             + DEPT_NAME + " TEXT NOT NULL)";
     
     /*
@@ -167,39 +167,42 @@ public class DatabaseAdapter
      */
 
     //LOG field numbers
-    public static final int COL_LOD_ID = 0;
+    public static final int COL_LOG_ID = 0;
     public static final int COL_LOG_INST_ID = 1;
     public static final int COL_LOG_PROCEDURE_ID = 2;
     public static final int COL_LOG_TECH_ID = 3;
     public static final int COL_LOG_DATE = 4;
     public static final int COL_LOG_SHIFT = 5;
     public static final int COL_LOG_TIME = 6;
+    public static final int COL_LOG_COMMENT = 7;
 
     //the columns for LOG TABLE
     public static final String LOG_ID_COLUMN = "logID";
     public static final String LOG_INST_ID = "instID";
     public static final String LOG_PROCEDURE_ID = "procID";
-    public static final String LOG_TECH_ID = "email";
+    public static final String LOG_TECH_ID = "techId";
     public static final String LOG_DATE = "date";
     public static final String LOG_SHIFT = "shift";
     public static final String LOG_TIME = "time";
+    public static final String LOG_COMMENT = "comment";
 
     //LOG table name
     public static final String LOG_TABLE = "Log";
 
     public static final String[] ALL_LOG_KEYS = new String[] {LOG_ID_COLUMN,
-            LOG_INST_ID, LOG_PROCEDURE_ID, LOG_TECH_ID, LOG_DATE,LOG_SHIFT, LOG_TIME};
+            LOG_INST_ID, LOG_PROCEDURE_ID, LOG_TECH_ID, LOG_DATE, LOG_TIME, LOG_SHIFT, LOG_COMMENT};
 
     //SQL Statement to create manager table
     public static final String CREATE_LOG_TABLE = "CREATE TABLE "
             + LOG_TABLE
-            + "(" + LOG_ID_COLUMN +  " INTEGER PRIMARY KEY NOT NULL,"
-            + LOG_INST_ID + " TEXT NOT NULL, "
+            + "(" + LOG_ID_COLUMN +  " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + LOG_INST_ID + " TEXT NOT NULL,"
             + LOG_PROCEDURE_ID +   " TEXT NOT NULL,"
             + LOG_TECH_ID + " INTEGER NOT NULL,"
             + LOG_DATE + " TEXT NOT NULL,"
+            + LOG_TIME + " TEXT NOT NULL,"
             + LOG_SHIFT + " TEXT NOT NULL,"
-            + LOG_TIME + " TEXT NOT NULL)" ;
+            + LOG_COMMENT + " TEXT NOT NULL)";
 
     /******************************************************************
      *
@@ -553,7 +556,6 @@ public class DatabaseAdapter
 
     /**
      * Inserts a row in the log table
-     * @param id: log ID
      * @param instID: Instrument ID
      * @param procID: Procedure ID
      * @param techID: Technologist ID
@@ -562,17 +564,17 @@ public class DatabaseAdapter
      * @param time: Time performed
      * @return: long to confirm success
      */
-    public long insertRowLog(int id,int instID, int procID, int techID, String date, String shift, String time)
+    public long insertRowLog(int instID, int procID, int techID, String date, String time,String shift, String comment)
     {
         ContentValues vals = new ContentValues();
 
-        vals.put(LOG_ID_COLUMN, id);
         vals.put(LOG_INST_ID, instID);
         vals.put(LOG_PROCEDURE_ID, procID);
         vals.put(LOG_TECH_ID, techID);
         vals.put(LOG_DATE, date);
-        vals.put(LOG_SHIFT, shift);
         vals.put(LOG_TIME, time);
+        vals.put(LOG_SHIFT, shift);
+        vals.put(LOG_COMMENT, comment);
 
         return db.insert(LOG_TABLE, null, vals);
     }
@@ -799,6 +801,21 @@ public class DatabaseAdapter
                manager.getEmail(), manager.getDepartmentNumber()) > 0;
 
     }
+
+    public boolean addLog(Log log)
+    {
+        return insertRowLog(log.getInstrumentID(), log.getProcedureID(), log.getTechID(),
+                log.getDate(), log.getTime(), log.getShift(), log.getComment())>0;
+    }
+
+    public Log getLogByID(int id)
+    {
+        Cursor l = getRowForLogID(id);
+        Log retrievedLog = new Log(l.getInt(COL_LOG_ID),l.getInt(COL_LOG_INST_ID),l.getInt(COL_LOG_TECH_ID), l.getInt(COL_LOG_PROCEDURE_ID),l.getString(COL_LOG_DATE),
+                l.getString(COL_LOG_TIME), l.getString(COL_LOG_SHIFT), l.getString(COL_LOG_COMMENT));//change that last date
+
+        return retrievedLog;
+    }
     public boolean addTech(Technologist tech)
     {
 
@@ -809,6 +826,7 @@ public class DatabaseAdapter
     {
         return getManagerForID(managerId);
     }
+
     public Technologist getTechById(int techId)
     {
         return getTechForID(techId);

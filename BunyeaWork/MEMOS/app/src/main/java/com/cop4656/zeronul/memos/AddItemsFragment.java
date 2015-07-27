@@ -59,6 +59,10 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
     private EditText frequency;
     private EditText instrumentPerformedOn;
     private Button addButton;
+<<<<<<< Updated upstream
+=======
+    public DatabaseAdapter myDB;
+>>>>>>> Stashed changes
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -355,4 +359,90 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
 
         return false;
     }
+<<<<<<< Updated upstream
+=======
+
+    private void openDB()
+    {
+        myDB = new DatabaseAdapter(this.getActivity());
+        myDB.open();
+    }
+
+    private void closeDB() {
+        myDB.close();
+    }
+
+    //add items like manager, tech, instrument, and procedure to database
+    public void addItemToDatabase()
+    {
+        if(newManager.isEnabled())
+        {
+            Manager m = new Manager(Integer.parseInt(managerID.getText().toString()), managerFirstName.getText().toString(), managerLastName.getText().toString(), "",0);
+            myDB.addManager(m);
+
+            //create manager
+            Manager addedManager = myDB.getManagerById(m.getEmployeeID());
+
+            //send message via toast
+            CharSequence textMessage = "Added Manager: " + addedManager.getEmployeeID() + ", " + addedManager.getLastName();
+            Context context = getActivity().getApplicationContext();
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText( context, textMessage, duration );
+            toast.show();
+
+        }
+        else if(newTechnologist.isEnabled())
+        {
+            Technologist t= new Technologist(Integer.parseInt(technologistID.getText().toString()),technologistFirstName.getText().toString(), technologistLastName.getText().toString(), "");
+            myDB.addTech(t);
+
+            Technologist addedTech = myDB.getTechForID(t.getEmployeeID());
+
+            //send message via toast
+            CharSequence textMessage = "Added Technologist: " + addedTech.getEmployeeID() + ", " + addedTech.getLastName();
+            Context context = getActivity().getApplicationContext();
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText(context, textMessage, duration);
+            toast.show();
+
+        }
+        else if(newInstrument.isEnabled())
+        {
+            System.out.println("This is not where I want to be");
+            Instrument i = new Instrument(Integer.parseInt(instrumentID.getText().toString()),instrumentModel.getText().toString());
+            boolean instAdded = myDB.addInstrument(i);
+
+            Instrument addedInstrument = myDB.getInstrumentById(i.getInstrumentID());
+
+            System.out.println(instAdded);
+
+            //send message via toast
+            CharSequence textMessage = "Added Instrument: " + addedInstrument.getInstrumentID() + ", " + addedInstrument.getModel();
+            Context context = getActivity().getApplicationContext();
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText(context, textMessage, duration);
+            toast.show();
+        }
+        else if(newProcedure.isEnabled())
+        {
+            Procedure p = new Procedure(Integer.parseInt("0"),procedureName.getText().toString(),Integer.parseInt(instrumentPerformedOn.getText().toString()),frequency.getText().toString());
+            myDB.addProcedure(p);
+
+            Procedure addedProcedure = myDB.getProcedureByID(p.getProcedureID());
+
+            //send message via toast
+            CharSequence textMessage = "Added Procedure: " + addedProcedure.getProcedureName() + ", " + addedProcedure.getFrequency();
+            Context context = getActivity().getApplicationContext();
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText(context, textMessage, duration);
+            toast.show();
+        }
+
+    }
+
+>>>>>>> Stashed changes
 }

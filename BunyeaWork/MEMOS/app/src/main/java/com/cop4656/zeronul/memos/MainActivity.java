@@ -34,6 +34,10 @@ public class MainActivity extends ActionBarActivity
     private static boolean manager = false;
     private static String userID = "";
 
+<<<<<<< Updated upstream
+=======
+    //private DatabaseAdapter myDB;
+>>>>>>> Stashed changes
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
