@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by dulybon1 on 7/8/15.
  * Database adapter
@@ -174,8 +177,8 @@ public class DatabaseAdapter
     public static final int COL_LOG_PROCEDURE_ID = 2;
     public static final int COL_LOG_TECH_ID = 3;
     public static final int COL_LOG_DATE = 4;
-    public static final int COL_LOG_SHIFT = 5;
-    public static final int COL_LOG_TIME = 6;
+    public static final int COL_LOG_SHIFT = 6;
+    public static final int COL_LOG_TIME = 5;
     public static final int COL_LOG_COMMENT = 7;
 
     //the columns for LOG TABLE
@@ -578,7 +581,7 @@ public class DatabaseAdapter
      * @param time: Time performed
      * @return: long to confirm success
      */
-    public long insertRowLog(int instID, int procID, int techID, String date, String time,String shift, String comment)
+        public long insertRowLog(String instID, String procID, String techID, String date, String time,String shift, String comment)
     {
         ContentValues vals = new ContentValues();
 
@@ -594,21 +597,63 @@ public class DatabaseAdapter
     }
 
     /**
-     * Gets one row from the log table
-     * @param logID: id of a log
-     * @return: a cursor that points to the row where id = logID
+     * Gets rows from the log table performed by tech
+     * @param techID: id of a tech that performed the
+     * @return: a cursor that points to the row where tech.getID() = techID
      */
-    public Cursor getRowForLogID(int logID)
-    {
-        String where = LOG_ID_COLUMN + "=" + logID;
-        Cursor t = db.query(true,LOG_TABLE,ALL_LOG_KEYS,where,null,null,null,null,null);
 
-        if(t != null)
-        {
-            t.moveToFirst();
+     //TO DO
+    public Cursor getLogsforTechId(String techID)
+    {
+        String where = LOG_TECH_ID + " = " + "\'" + techID + "\'";
+        Cursor c = db.query(true,LOG_TABLE, ALL_LOG_KEYS,where,null,null,null,null,null);
+
+        if(c != null) {
+             c.moveToFirst();
         }
-        return t;
+        return  c;
     }
+
+    /**
+     *
+     * @return Cursor pointing logs created today
+     */
+    public Cursor getLogsForToday()
+    {
+        Date dateObject = new Date();
+        SimpleDateFormat dateFormatter = new SimpleDateFormat( "yyyy-MM-dd" );
+        String date = dateFormatter.format(dateObject);
+        //to do
+        String where = LOG_DATE + " = " + "\'" + date + "\'";
+
+        System.out.println(date);
+        System.out.println(where);
+
+        Cursor c = db.query(true,LOG_TABLE, ALL_LOG_KEYS,where,null,null, null,null,null);
+        if(c != null) {
+            c.moveToFirst();
+        }
+        return  c;
+
+    }
+
+    /**
+     * @param start
+     * @param end
+     * @return Cursor pointing logs in the interval
+     */
+    public Cursor getLogsForDateInterval(String start, String end)
+    {
+        String where = LOG_DATE + " BETWEEN " + "\'" + start + "\'" + "AND" + "\'" + end + "\'" ;//needs to be fixed
+        Cursor c = db.query(true,LOG_TABLE, ALL_LOG_KEYS,where,null,null,null,null,null);
+        if(c != null)
+        {
+            c.moveToFirst();
+        }
+        System.out.println(where);
+        return c;//this is not finished
+    }
+
 
     /**
      * Gets all the rows in the log table
@@ -873,16 +918,6 @@ public class DatabaseAdapter
         return insertRowLog(log.getInstrumentID(), log.getProcedureID(), log.getTechID(),
                 log.getDate(), log.getTime(), log.getShift(), log.getComment())>0;
     }
-
-    public Log getLogByID(int id)
-    {
-        Cursor l = getRowForLogID(id);
-        Log retrievedLog = new Log(l.getInt(COL_LOG_ID),l.getInt(COL_LOG_INST_ID),l.getInt(COL_LOG_TECH_ID), l.getInt(COL_LOG_PROCEDURE_ID),l.getString(COL_LOG_DATE),
-                l.getString(COL_LOG_TIME), l.getString(COL_LOG_SHIFT), l.getString(COL_LOG_COMMENT));//change that last date
-
-        return retrievedLog;
-    }
-
 
 
     /*

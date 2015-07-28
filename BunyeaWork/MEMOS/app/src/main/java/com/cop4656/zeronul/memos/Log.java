@@ -6,17 +6,15 @@ package com.cop4656.zeronul.memos;
  */
 public class Log
 {
-    //PRIMARY KEY
-    private int logID_;
 
     //this is the id of the instrument (FOREIGN KEY)
-    private int instrumentID_;
+    private String instrumentID_;
 
     //procedure performed (FOREIGN KEY)
-    private int procedureID_;
+    private String procedureID_;
 
     //Who performed the procedure (FOREIGN KEY)
-    private int techID_;
+    private String techID_;
 
     //date procedure was performed
     private String date_;
@@ -29,9 +27,9 @@ public class Log
 
     private String comment_;
 
-    Log(int logID, int instrumentID, int procedureID,int techID,String date, String time, String shift, String comment)
+    Log( String instrumentID, String procedureID,String techID,String date, String time, String shift, String comment)
     {
-        this.logID_ = logID;
+
         this.instrumentID_ = instrumentID;
         this.procedureID_ = procedureID;
         this.techID_ = techID;
@@ -43,17 +41,17 @@ public class Log
 
     //public int getLogID() {return logID_;}
 
-    public int getInstrumentID()
+    public String getInstrumentID()
     {
         return instrumentID_;
     }
 
-    public int getProcedureID()
+    public String getProcedureID()
     {
         return procedureID_;
     }
 
-    public int getTechID()
+    public String getTechID()
     {
         return techID_;
     }
@@ -79,7 +77,4 @@ public class Log
     }
 
 
-    public int getLogId() {
-        return logID_;
-    }
 }

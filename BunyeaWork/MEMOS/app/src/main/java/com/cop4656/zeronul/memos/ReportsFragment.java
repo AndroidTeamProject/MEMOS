@@ -3,10 +3,11 @@ package com.cop4656.zeronul.memos;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +23,7 @@ import org.apache.http.protocol.HTTP;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 /**
@@ -41,6 +37,9 @@ public class ReportsFragment extends Fragment implements View.OnClickListener
 
     //filename of log
     private static final String FILENAME = "log.txt";
+
+    //database
+    private DatabaseAdapter myDB;
 
     //widget creation
     RadioGroup radioGroup;
@@ -109,6 +108,9 @@ public class ReportsFragment extends Fragment implements View.OnClickListener
             toast.show();
         }
 
+        //open the database
+        openDB();
+
         //set listeners for buttons
         rootView.findViewById( R.id.selectDate ).setOnClickListener(this);
         rootView.findViewById( R.id.sendReport ).setOnClickListener(this);
@@ -168,6 +170,20 @@ public class ReportsFragment extends Fragment implements View.OnClickListener
             // ************* NEED METHOD TO QUERY DATABASE BASED ON DATES!!!******************
             // ************* NEED VARIABLE TO HOLD DATE SELECTION!!!**************************
             case R.id.selectDate:
+
+                /*
+                FOR DEBUGGING
+
+                Date d = new Date();
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                String date = df.format(d);
+                populateArrayListWithLogsFromInterval("2014-02-01",date);
+
+                */
+                //populateArrayListWithLogsFromToday();
+
+                populateArrayListWithAllLogs();
+
                 ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                         context,
                         android.R.layout.simple_list_item_1,
@@ -276,11 +292,83 @@ public class ReportsFragment extends Fragment implements View.OnClickListener
         }
     }
 
+
+    private void populateArrayListWithAllLogs()
+    {
+        Cursor cursor = myDB.getAllRowsForLog();
+
+        if(cursor.moveToFirst())
+        {
+            do {
+
+                //make a string for each log
+                String logString = cursor.getString(myDB.COL_LOG_DATE) + " @ " +
+                        cursor.getString(myDB.COL_LOG_TIME) + " " +
+                        cursor.getString(myDB.COL_LOG_SHIFT) + " ON " +
+                        cursor.getString(myDB.COL_LOG_INST_ID) + " " +
+                        cursor.getString(myDB.COL_LOG_PROCEDURE_ID) + " BY " +
+                        cursor.getString(myDB.COL_LOG_TECH_ID);
+
+                //add it to test reports
+                testReports.add(logString);
+
+            }while (cursor.moveToNext());
+        }
+    }
+
+    //make sure the dates have following format yyyy-MM-dd
+    private void populateArrayListWithLogsFromInterval(String start, String end)
+    {
+        Cursor cursor = myDB.getLogsForDateInterval(start, end);
+        if(cursor.moveToFirst())
+        {
+            do {
+
+                //make a string for each log
+                String logString = cursor.getString(myDB.COL_LOG_DATE) + " @ " +
+                        cursor.getString(myDB.COL_LOG_TIME) + " " +
+                        cursor.getString(myDB.COL_LOG_SHIFT) + " ON " +
+                        cursor.getString(myDB.COL_LOG_INST_ID) + " " +
+                        cursor.getString(myDB.COL_LOG_PROCEDURE_ID) + " BY " +
+                        cursor.getString(myDB.COL_LOG_TECH_ID);
+
+                //add it to test reports
+                testReports.add(logString);
+
+            }while (cursor.moveToNext());
+        }
+
+    }
+
+    private void populateArrayListWithLogsFromToday()
+    {
+        Cursor cursor = myDB.getLogsForToday();
+        if(cursor.moveToFirst())
+        {
+            do {
+
+                //make a string for each log
+                String logString = cursor.getString(myDB.COL_LOG_DATE) + " @ " +
+                        cursor.getString(myDB.COL_LOG_TIME) + " " +
+                        cursor.getString(myDB.COL_LOG_SHIFT) + " ON " +
+                        cursor.getString(myDB.COL_LOG_INST_ID) + " " +
+                        cursor.getString(myDB.COL_LOG_PROCEDURE_ID) + " BY " +
+                        cursor.getString(myDB.COL_LOG_TECH_ID);
+
+                //add it to test reports
+                testReports.add(logString);
+
+            }while (cursor.moveToNext());
+        }
+
+    }
+
     //method to load generic data into ArrayList
     private void loadTestList( int numberOfRounds )
     {
         for ( int i = 0; i < numberOfRounds; ++i )
         {
+            /*
             testReports.add("Lorem");
             testReports.add("Ipsum");
             testReports.add("Neque");
@@ -297,6 +385,17 @@ public class ReportsFragment extends Fragment implements View.OnClickListener
             testReports.add("Consectetur");
             testReports.add("Adipisci");
             testReports.add("Velit");
+            */
         }
+    }
+
+    private void openDB()
+    {
+        myDB = new DatabaseAdapter(this.getActivity());
+        myDB.open();
+    }
+
+    private void closeDB() {
+        myDB.close();
     }
 }

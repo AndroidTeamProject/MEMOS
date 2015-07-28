@@ -2,8 +2,8 @@ package com.cop4656.zeronul.memos;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -45,8 +46,9 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
     Date dateObject = new Date();
     SimpleDateFormat dateFormatter = new SimpleDateFormat( "dd/MM/yyyy" );
     SimpleDateFormat timeFormatter = new SimpleDateFormat( "HH:mm" );
-
     String date = dateFormatter.format( dateObject );
+
+
 
     /**
      * The fragment argument representing the section number for this
@@ -162,8 +164,8 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
         editText6.setText("");
         editText7.setText("");
 
-        editText3.setEnabled(false);
-        editText4.setEnabled(false);
+        //editText3.setEnabled(false);
+        //editText4.setEnabled(false);
     }
 
     //method to check if field has been left blank
@@ -209,16 +211,32 @@ public class MaintenanceFragment extends Fragment implements View.OnClickListene
         //handle insertion of data into database
         //**************************NEED METHOD TO INSERT DATA!!!****************************
         else
-        {   //Log(int instrumentID, int procedureID,int techID,String date, String time, String shift, String comment)
-            Log l = new Log(1, Integer.parseInt(editText.getText().toString()),Integer.parseInt(editText5.getText().toString()),
-                    Integer.parseInt(editText2.getText().toString()),editText3.getText().toString(),editText4.getText().toString(),
+        {   //Log(String instrumentID, String procedureID,String techID,String date, String time, String shift, String comment)
+            SimpleDateFormat databaseDateFormater = new SimpleDateFormat("yyyy-MM-dd");
+            String databaseDate = databaseDateFormater.format(dateObject);
+
+            /*
+            debugging
+             */
+            String dateString = "2014-2-2";
+            Date customDate =new Date();
+            String customDateString = databaseDateFormater.format(customDate);
+
+            try {
+                customDate = databaseDateFormater.parse(dateString);
+                customDateString = databaseDateFormater.format(customDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            System.out.println(databaseDate);
+
+            Log l = new Log(editText.getText().toString(),editText5.getText().toString(),
+                    editText2.getText().toString(),customDateString, editText4.getText().toString(),
                     editText6.getText().toString(), editText7.getText().toString());
 
             //put log in the database
             myDatabase.addLog(l);
-
-            //display a log(not the actual current log)
-            //Log addedLog = myDatabase.getLogByID(3);
 
             //show it in a toast
             /*
