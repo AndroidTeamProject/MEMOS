@@ -34,7 +34,7 @@ public class MainActivity extends ActionBarActivity
     private static boolean manager = false;
     private static String userID = "";
 
-    //private DatabaseAdapter myDB;
+    private DatabaseAdapter myDB;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -245,7 +245,7 @@ public class MainActivity extends ActionBarActivity
         Context context = getApplicationContext();
         int duration = Toast.LENGTH_LONG;
 
-        Toast toastScore = Toast.makeText( context, textMessage, duration );
-        toastScore.show();
+        Toast toast = Toast.makeText( context, textMessage, duration );
+        toast.show();
     }
 }

@@ -41,6 +41,8 @@
     <string name="comments">Comments</string>
 
     <string name="login_error">PLEASE LOG IN</string>
+    <string name="account_error">Account not found. Contact your manager.</string>
+    <string name="password_error">INVALID PASSWORD</string>
     <string name="manager_error">MANAGER ACCOUNT REQUIRED</string>
     <string name="technologist_error">TECHNOLOGIST ACCOUNT REQUIRED</string>
     <string name="empty_field_error">A required field has been left empty.</string>

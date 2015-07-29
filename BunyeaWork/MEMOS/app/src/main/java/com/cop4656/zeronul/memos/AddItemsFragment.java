@@ -321,12 +321,12 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
             fieldChecker = managerLastName.getText().toString();
             if ( fieldChecker.equals( "" ) )
                 return true;
-//            fieldChecker = managerPassword.getText().toString();
-//            if ( fieldChecker.equals( "" ) )
-//               return true;
-//            fieldChecker = managerEmail.getText().toString();
-//            if ( fieldChecker.equals( "" ) )
-//                return true;
+            fieldChecker = managerPassword.getText().toString();
+            if ( fieldChecker.equals( "" ) )
+               return true;
+            fieldChecker = managerEmail.getText().toString();
+            if ( fieldChecker.equals( "" ) )
+                return true;
         }
 
         else if ( newTechnologist.isEnabled() )
@@ -398,7 +398,9 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
             Manager addedManager = myDB.getManagerById(m.getEmployeeID());
 
             //send message via toast
-            CharSequence textMessage = "Added Manager: " + addedManager.getEmployeeID() + ", " + addedManager.getLastName();
+            CharSequence textMessage = "Added Manager: " + addedManager.getEmployeeID() + '\n'
+                    + addedManager.getLastName() + ", " + addedManager.getFirstName() + '\n'
+                    + addedManager.getEmail() + ", " + addedManager.getPassword();
             Context context = getActivity().getApplicationContext();
             int duration = Toast.LENGTH_LONG;
 
@@ -417,7 +419,9 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
             Technologist addedTech = myDB.getTechForID(t.getEmployeeID());
 
             //send message via toast
-            CharSequence textMessage = "Added Technologist: " + addedTech.getEmployeeID() + ", " + addedTech.getLastName();
+            CharSequence textMessage = "Added Technologist: " + addedTech.getEmployeeID() + '\n'
+                    + addedTech.getLastName() + ", " + addedTech.getFirstName() + '\n'
+                    + addedTech.getPassword();
             Context context = getActivity().getApplicationContext();
             int duration = Toast.LENGTH_LONG;
 

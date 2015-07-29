@@ -2,6 +2,7 @@ package com.cop4656.zeronul.memos;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * Created by Zero Nul (Jason D. Bunyea) on 7/16/2015. This is the home screen that will allow
@@ -84,12 +86,67 @@ public class HomeFragment extends Fragment implements View.OnClickListener
     //*********************NEED METHOD TO VERIFY USER ACCOUNT!!!***************************
     public void login()
     {
-        loginButton.setText(R.string.logout);
-        ( ( MainActivity )getActivity() ).setLoggedIn(true);
-        ( ( MainActivity )getActivity() ).setUserID(userIDField.getText().toString());
-        userIDField.setText( ( ( MainActivity )getActivity() ).getUserID() );
-        userIDField.setClickable(false);
-        passwordField.setVisibility(View.GONE);
+        String userID = userIDField.getText().toString();
+        String password = passwordField.getText().toString();
+
+//        if ( myDB.getManagerPasswordForID( userID ) != "NO PASSWORD" )
+//        {
+//            if ( myDB.getManagerPasswordForID(userID) == password )
+//            {
+                ((MainActivity) getActivity()).setManager(true);
+                loginButton.setText(R.string.logout);
+                ((MainActivity) getActivity()).setLoggedIn(true);
+                ((MainActivity) getActivity()).setUserID(userIDField.getText().toString());
+                userIDField.setText(((MainActivity) getActivity()).getUserID());
+                userIDField.setClickable(false);
+                passwordField.setVisibility(View.GONE);
+//            }
+/*
+            else
+            {
+                CharSequence textMessage = ( getActivity().getString( R.string.password_error ) )
+                        + " " + myDB.getManagerPasswordForID( userID );
+                Context context = getActivity().getApplicationContext();
+                int duration = Toast.LENGTH_LONG;
+
+                Toast toast = Toast.makeText( context, textMessage, duration );
+                toast.show();
+            }
+        }
+
+        else if ( myDB.getTechPasswordForID( userID ) != "NO PASSWORD" )
+        {
+            if ( myDB.getTechPasswordForID( userID ) == password )
+            {
+                loginButton.setText(R.string.logout);
+                ((MainActivity) getActivity()).setLoggedIn(true);
+                ((MainActivity) getActivity()).setUserID(userIDField.getText().toString());
+                userIDField.setText(((MainActivity) getActivity()).getUserID());
+                userIDField.setClickable(false);
+                passwordField.setVisibility(View.GONE);
+            }
+
+            else
+            {
+                CharSequence textMessage = ( getActivity().getString( R.string.password_error ) );
+                Context context = getActivity().getApplicationContext();
+                int duration = Toast.LENGTH_LONG;
+
+                Toast toast = Toast.makeText( context, textMessage, duration );
+                toast.show();
+            }
+        }
+
+        else
+        {
+            CharSequence textMessage = ( getActivity().getString( R.string.account_error ) );
+            Context context = getActivity().getApplicationContext();
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText( context, textMessage, duration );
+            toast.show();
+        }
+*/
     }
 
     //overloaded login method to handle inflation when a user is already logged in
@@ -107,8 +164,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         loginButton.setText(R.string.login);
         ( ( MainActivity )getActivity() ).setLoggedIn(false);
         ( ( MainActivity )getActivity() ).setUserID("");
-        userIDField.setText( "" );
+        userIDField.setText("");
         userIDField.setClickable(true);
+        passwordField.setText("");
         passwordField.setVisibility(View.VISIBLE);
     }
 

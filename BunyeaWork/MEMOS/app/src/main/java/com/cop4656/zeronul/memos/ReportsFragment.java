@@ -53,7 +53,7 @@ public class ReportsFragment extends Fragment implements View.OnClickListener
     ListView reportField;
 
     //ArrayList to hold database data for reporting
-    ArrayList<String> testReports = new ArrayList<String>();
+    ArrayList<String> testReports = new ArrayList<>();
 
     /**
      * The fragment argument representing the section number for this
@@ -94,7 +94,7 @@ public class ReportsFragment extends Fragment implements View.OnClickListener
         reportField = (ListView)rootView.findViewById( R.id.reportField );
 
         //load generic data into ArrayList
-        loadTestList( 10 );
+        loadTestList( 3 );
 
         //verify a user is logged in
         if( !( ( MainActivity )getActivity()).isLoggedIn() )
@@ -149,18 +149,11 @@ public class ReportsFragment extends Fragment implements View.OnClickListener
 
         //this ****SHOULD**** create the file to contain the report data
         //unable to verify at this point
-        String filePath = Environment.getDataDirectory().toString();
-        File appDirectory = new File( context.getFilesDir(), "MEMOS" );
-        if ( ! appDirectory.exists() )
-        {
-            appDirectory.mkdirs();
-        }
 
-        File logPath = new File( appDirectory, "log.txt" );
-
-        if ( !logPath.exists() )
+        File appDirectory = new File( context.getFilesDir(), "MEMOS");
+        if ( !appDirectory.exists() )
         {
-            logPath.mkdirs();
+            appDirectory.mkdir();
         }
 
         //determine which button was pressed
@@ -182,61 +175,102 @@ public class ReportsFragment extends Fragment implements View.OnClickListener
                 */
                 //populateArrayListWithLogsFromToday();
 
-                populateArrayListWithAllLogs();
+                //populateArrayListWithAllLogs();
 
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                loadTestList( NUMBER_OF_ROUNDS );
+
+                //create additional ArratList to hold labels and data
+                ArrayList<String> reportList = new ArrayList<>();
+
+                //increment counters
+                int i = 0;
+                int j = 0;
+
+                for ( String logEntry : testReports )
+                {
+                    //string object to hold label
+                    String item;
+                    //switch decides label based on increment of i
+                    switch ( i )
+                    {
+                        case 0:
+                            item = "Log ID: ";
+                            ++i;
+                            break;
+                        case 1:
+                            item = "Instrument ID: ";
+                            ++i;
+                            break;
+                        case 2:
+                            item  = "Employee ID: ";
+                            ++i;
+                            break;
+                        case 3:
+                            item = "Date: ";
+                            ++i;
+                            break;
+                        case 4:
+                            item = "Time: ";
+                            ++i;
+                            break;
+                        case 5:
+                            item = "Shift: ";
+                            ++i;
+                            break;
+                        case 6:
+                            item = "Comment: ";
+                            i = 0;
+                            break;
+                        default:
+                            item = "ERROR ERROR ERROR";
+                    }
+
+                    //add label and data into ArrayList reportList
+                    reportList.add( item + testReports.get(j) );
+                    ++j;
+                }
+
+                //load reportList into ListView for view report on android device
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
                         context,
                         android.R.layout.simple_list_item_1,
-                        testReports );
+                        reportList );
                 arrayAdapter.notifyDataSetChanged();
                 reportField.setAdapter(arrayAdapter);
 
+                //begin writing .txt report. Report is being written as MEMOSlog.txt in
+                // /data/data/com.cop4656.zeronul.memos/files
                 try
                 {
-                    //write to file ... ?
-                    BufferedWriter writer = new BufferedWriter( new FileWriter( logPath ) ) ;
-//                    fos.write(NUMBER_TOKENS.getBytes());
-                    String item;
-                    for ( String word : testReports )
-                    {
-                        int i = 0;
-                        switch ( i )
-                        {
-                            case 0:
-                                item = "Log ID: ";
-                                ++i;
-                                break;
-                            case 1:
-                                item = "Instrument ID: ";
-                                ++i;
-                                break;
-                            case 2:
-                                item  = "Employee ID: ";
-                                ++i;
-                                break;
-                            case 3:
-                                item = "Date: ";
-                                ++i;
-                                break;
-                            case 4:
-                                item = "Time: ";
-                                ++i;
-                                break;
-                            case 5:
-                                item = "Shift: ";
-                                ++i;
-                                break;
-                            case 6:
-                                item = "Comment: ";
-                                i = 0;
-                                break;
-                            default:
-                                item = "ERROR ERROR ERROR";
-                        }
 
-                        writer.write( item );
-                        writer.write( word );
+                    BufferedWriter writer = new BufferedWriter( new FileWriter(  appDirectory + "log.txt" ) ) ;
+//                    fos.write(NUMBER_TOKENS.getBytes());
+                    //reset increment counter
+                    i = 0;
+                    for ( String word : reportList)
+                    {
+                        //define carriage return for Notepad
+                        char r = '\r';
+                        char n = '\n';
+
+                        //write line of reportList
+                        writer.write(word);
+                        //write carriage return
+                        writer.write(r);
+                        writer.write(n);
                         writer.newLine();
+                        //if end of list write another carriage return
+                        if ( i == 6 )
+                        {
+                            writer.write(r);
+                            writer.write(n);
+                            writer.newLine();
+                        }
+                        ++i;
+                        //if finished with one group start over
+                        if ( i == 7 )
+                            i = 0;
+                        writer.flush();
                     }
 
                     writer.close();
@@ -256,8 +290,6 @@ public class ReportsFragment extends Fragment implements View.OnClickListener
             //***************
             //***************
             // it shows attachment. email does not have attachment upon receipt.
-            //assume that this has something to do with file not being log.txt not being created
-            //correctly
             case R.id.sendReport:
                 // **** Send Log In Email Activity ****//
                 // Author: Kara Beason
@@ -279,7 +311,7 @@ public class ReportsFragment extends Fragment implements View.OnClickListener
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Emailing report log");
                 emailIntent.putExtra(Intent.EXTRA_TEXT, "Attachment of report log");
                 // need to use the already queried log rows (report) here as attachment to email
-                emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(logPath.toString()));
+                emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(context.getExternalFilesDir("MEMOS") + "/log.txt"));
                 // You can also attach multiple items by passing an ArrayList of Uris
                 startActivity(Intent.createChooser(emailIntent, "Send email..."));
                 // this pulls up email accounts set up by user on phone, then pulls up email
@@ -368,7 +400,7 @@ public class ReportsFragment extends Fragment implements View.OnClickListener
     {
         for ( int i = 0; i < numberOfRounds; ++i )
         {
-            /*
+            ///*
             testReports.add("Lorem");
             testReports.add("Ipsum");
             testReports.add("Neque");
@@ -385,7 +417,7 @@ public class ReportsFragment extends Fragment implements View.OnClickListener
             testReports.add("Consectetur");
             testReports.add("Adipisci");
             testReports.add("Velit");
-            */
+            //*/
         }
     }
 

@@ -892,22 +892,30 @@ public class DatabaseAdapter
      * @param id
      * @return password
      */
-    public String getPasswordForID(String id)
+    public String getTechPasswordForID(String id)
     {
         String password = "NO PASSWORD";
         Technologist technologist = getTechById(id);
-        Manager manager = getManagerById(id);
-
         if(technologist.getEmployeeID()!= "NO_ID")
         {
             password = technologist.getPassword();
         }
-        else if (manager.getEmployeeID() != "NO_ID")
+        return password;
+    }
+
+    public String getManagerPasswordForID(String id)
+    {
+        String password = "NO PASSWORD";
+        Manager manager = getManagerById(id);
+
+        if (manager.getEmployeeID() != "NO_ID")
         {
             password = manager.getPassword();
         }
         return password;
     }
+
+
 
     /*
     LOG API FUNCTIONS
