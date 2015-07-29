@@ -8,8 +8,8 @@ public class Technologist extends Employee
 {
 
     //constructor
-    Technologist(String id,String fName,String lName, String password)
+    Technologist(String id,String fName,String lName,String email, String password)
     {
-        super(id,fName,lName, password);
+        super(id,fName,lName, email, password);
     }
 }

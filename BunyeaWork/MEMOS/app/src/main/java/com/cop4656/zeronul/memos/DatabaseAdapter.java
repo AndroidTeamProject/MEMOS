@@ -372,11 +372,11 @@ public class DatabaseAdapter
         {
             t.moveToFirst();
              tech = new Technologist(t.getString(COL_TECH_ID), t.getString(COL_TECH_FIRST),
-                    t.getString(COL_TECH_LAST), t.getString(COL_TECH_PASSWORD));
+                    t.getString(COL_TECH_LAST),"", t.getString(COL_TECH_PASSWORD));
         }
         else
         {
-            tech = new Technologist("NO_ID","NO FIRST","NO LAST","NO PASSWORD");
+            tech = new Technologist("NO_ID","NO FIRST","NO LAST","NO EMAIL","NO PASSWORD");
         }
 
         return tech;
@@ -878,7 +878,7 @@ public class DatabaseAdapter
     {
 
         return insertRowTech(tech.getEmployeeID(), tech.getFirstName(),
-                tech.getLastName(), tech.getEmail()) > 0;
+                tech.getLastName(), tech.getPassword()) > 0;
     }
 
     public Technologist getTechById(String techId)

@@ -8,12 +8,15 @@ public class Manager extends Employee
 {
     //variables
     private int departmentNumber_;
+    //private String password_;
 
     //constructor
     Manager(String id,String fName,String lName, String email,int deptNumber, String password)
     {
-        super(id,fName,lName, email);
+        super(id,fName,lName, email, password);
         departmentNumber_ = deptNumber;
+        //password_ = password;
+
 
     }
 

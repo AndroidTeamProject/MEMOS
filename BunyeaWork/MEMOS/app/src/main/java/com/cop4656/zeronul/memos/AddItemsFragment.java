@@ -412,7 +412,7 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
         {
             Technologist t= new Technologist(technologistID.getText().toString(),
                     technologistFirstName.getText().toString(), technologistLastName.getText().toString(),
-                    technologistPassword.getText().toString());
+                    "emailNotNeeded",technologistPassword.getText().toString());
 
             myDB.addTech(t);
 
@@ -422,6 +422,7 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
             CharSequence textMessage = "Added Technologist: " + addedTech.getEmployeeID() + '\n'
                     + addedTech.getLastName() + ", " + addedTech.getFirstName() + '\n'
                     + addedTech.getPassword();
+
             Context context = getActivity().getApplicationContext();
             int duration = Toast.LENGTH_LONG;
 

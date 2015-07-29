@@ -14,15 +14,16 @@ public class Employee
     private String firstName_;
     private String lastName_;
     private String email_;
-    private String password_ = "DEFAULT";
+    private String password_;
 
     //constructor
-    Employee(String employeeID, String firstName, String lastName, String email)
+    Employee(String employeeID, String firstName, String lastName, String email, String password)
     {
         this.EmployeeID_ = employeeID;
         this.firstName_ = firstName;
         this.lastName_ = lastName;
         this.email_ = email;
+        this.password_ = password;
     }
 
     //Getters
