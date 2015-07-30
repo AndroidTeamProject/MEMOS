@@ -11,18 +11,15 @@ public class Manager extends Employee
     //private String password_;
 
     //constructor
-    Manager(String id,String fName,String lName, String email,int deptNumber, String password)
+    Manager(String id,String fName,String lName, String email, String password)
     {
         super(id,fName,lName, email, password);
-        departmentNumber_ = deptNumber;
+        //departmentNumber_ = deptNumber;
         //password_ = password;
 
 
     }
 
-    public int getDepartmentNumber()
-    {
-        return departmentNumber_;
-    }
+    //public int getDepartmentNumber() {return departmentNumber_;}
 
 }

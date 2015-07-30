@@ -389,7 +389,7 @@ public class AddItemsFragment extends Fragment implements OnItemSelectedListener
             //Create manager
             Manager m = new Manager(managerID.getText().toString(),
                     managerFirstName.getText().toString(), managerLastName.getText().toString(),
-                    managerEmail.getText().toString(),0,managerPassword.getText().toString());
+                    managerEmail.getText().toString(),managerPassword.getText().toString());
 
             //Add manager to database
             myDB.addManager(m);

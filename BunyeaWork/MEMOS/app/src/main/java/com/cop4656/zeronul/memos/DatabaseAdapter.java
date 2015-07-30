@@ -33,8 +33,8 @@ public class DatabaseAdapter
     public static final int COL_MANAGER_FIRST = 1;
     public static final int COL_MANAGER_LAST = 2;
     public static final int COL_MANAGER_EMAIL = 3;
-    public static final int COL_MANAGER_DEPT = 4;
-    public static final int COL_MANAGER_PASSWORD = 5;
+    //public static final int COL_MANAGER_DEPT = 4;
+    public static final int COL_MANAGER_PASSWORD = 4;
 
     //Manager table name
     public static final String MANAGER_TABLE = "Manager";
@@ -44,11 +44,11 @@ public class DatabaseAdapter
     public static final String MANAGER_FIRST_NAME = "firstName";
     public static final String MANAGER_LAST_NAME = "lastName";
     public static final String MANAGER_EMAIL = "email";
-    public static final String MANAGER_DEPARTMENT = "department";
+    //public static final String MANAGER_DEPARTMENT = "department";
     public static final String MANAGER_PASSWORD = "managerPassword";
 
     public static final String[] ALL_MANAGER_KEYS = new String[] {MANAGER_ID_COLUMN,
-            MANAGER_FIRST_NAME, MANAGER_LAST_NAME, MANAGER_EMAIL, MANAGER_DEPARTMENT, MANAGER_PASSWORD};
+            MANAGER_FIRST_NAME, MANAGER_LAST_NAME, MANAGER_EMAIL, MANAGER_PASSWORD};
 
     //SQL Statement to create manager table
     public static final String CREATE_MANAGER_TABLE = "CREATE TABLE "
@@ -56,7 +56,6 @@ public class DatabaseAdapter
             + "(" + MANAGER_ID_COLUMN +  " TEXT PRIMARY KEY NOT NULL,"
             + MANAGER_FIRST_NAME + " TEXT NOT NULL, "
             + MANAGER_LAST_NAME +   " TEXT NOT NULL,"
-            + MANAGER_DEPARTMENT + " INTEGER NOT NULL,"
             + MANAGER_EMAIL + " TEXT NOT NULL,"
             + MANAGER_PASSWORD + " TEXT NOT NULL)";
 
@@ -237,7 +236,7 @@ public class DatabaseAdapter
 
 
     //Insert a row in manager's table
-    public long insertRowManager(String id, String first, String last, String em, int dept, String pw)
+    public long insertRowManager(String id, String first, String last, String em, String pw)
     {
         ContentValues vals = new ContentValues();
 
@@ -245,7 +244,6 @@ public class DatabaseAdapter
         vals.put(MANAGER_FIRST_NAME, first);
         vals.put(MANAGER_LAST_NAME, last);
         vals.put(MANAGER_EMAIL, em);
-        vals.put(MANAGER_DEPARTMENT, dept);
         vals.put(MANAGER_PASSWORD, pw);
 
         return db.insert(MANAGER_TABLE, null, vals);
@@ -272,17 +270,17 @@ public class DatabaseAdapter
         String where = MANAGER_ID_COLUMN + "=" + "\'" + managerID + "\'";
         Cursor c = db.query(true,MANAGER_TABLE,ALL_MANAGER_KEYS,where,null,null,null,null,null);
 
-        if(c != null)
+        if(c.moveToFirst())
         {
-            c.moveToFirst();
+
              manager = new Manager(c.getString(COL_MANAGER_ID),
                     c.getString(COL_MANAGER_FIRST),c.getString(COL_MANAGER_LAST),
-                    c.getString(COL_MANAGER_EMAIL),c.getInt(COL_MANAGER_DEPT),
+                    c.getString(COL_MANAGER_EMAIL),
                     c.getString(COL_MANAGER_PASSWORD));
         }
         else
         {
-            manager = new Manager("NO_ID", "NO_FIRST", "NO_LAST","NO_EMAIL",-1,"NO_PASS");
+            manager = new Manager("NO_ID", "NO_FIRST", "NO_LAST","NO_EMAIL","NO_PASS");
         }
 
 
@@ -368,9 +366,9 @@ public class DatabaseAdapter
         String where = TECH_ID_COLUMN + "=" + "\'" + techID + "\'";
         Cursor t = db.query(true,TECH_TABLE,ALL_TECH_KEYS,where,null,null,null,null,null);
 
-        if(t != null)
+        if(t.moveToFirst())
         {
-            t.moveToFirst();
+
              tech = new Technologist(t.getString(COL_TECH_ID), t.getString(COL_TECH_FIRST),
                     t.getString(COL_TECH_LAST),"", t.getString(COL_TECH_PASSWORD));
         }
@@ -861,7 +859,7 @@ public class DatabaseAdapter
     {
 
        return insertRowManager(manager.getEmployeeID(), manager.getFirstName(), manager.getLastName(),
-               manager.getEmail(), manager.getDepartmentNumber(), manager.getPassword()) > 0;
+               manager.getEmail(), manager.getPassword()) > 0;
 
     }
 

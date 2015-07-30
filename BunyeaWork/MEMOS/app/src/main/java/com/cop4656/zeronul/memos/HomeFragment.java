@@ -89,10 +89,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener
         String userID = userIDField.getText().toString();
         String password = passwordField.getText().toString();
 
-//        if ( myDB.getManagerPasswordForID( userID ) != "NO PASSWORD" )
-//        {
-//            if ( myDB.getManagerPasswordForID(userID) == password )
-//            {
+        if ( myDB.getManagerPasswordForID( userID ) != "NO PASSWORD" )
+        {  if ( myDB.getManagerPasswordForID(userID) == password )
+            {
                 ((MainActivity) getActivity()).setManager(true);
                 loginButton.setText(R.string.logout);
                 ((MainActivity) getActivity()).setLoggedIn(true);
@@ -100,8 +99,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener
                 userIDField.setText(((MainActivity) getActivity()).getUserID());
                 userIDField.setClickable(false);
                 passwordField.setVisibility(View.GONE);
-//            }
-/*
+            }
+
             else
             {
                 CharSequence textMessage = ( getActivity().getString( R.string.password_error ) )
@@ -146,7 +145,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener
             Toast toast = Toast.makeText( context, textMessage, duration );
             toast.show();
         }
-*/
+
     }
 
     //overloaded login method to handle inflation when a user is already logged in
